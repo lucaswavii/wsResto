@@ -148,3 +148,7 @@ module.exports.salvar = function( application, req, res ){
     });
      
 }
+
+module.exports.login = function( application, req, res ){
+
+};
