@@ -1,5 +1,10 @@
 module.exports.index = function( application, req, res ){
     
+    if( req.session.usuario == undefined ) {
+		res.redirect("/login");
+		return;			
+    }
+    
     var connection = application.config.dbConnection();
     var funcionarioDao = new application.app.models.FuncionarioDAO(connection);
     

@@ -56,10 +56,48 @@
                                             <div class="container-fluid">
                                                 <div class="row">
                                                     
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-6">
                                                         <label>Nome*:</label>
-                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" autofocus >
-                                                    </div>                                                
+                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o NOME do usuário" autofocus >
+                                                    </div>         
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Senha*:</label>
+                                                        <input type="password" class="form-control" name="senha" id="senha" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o SENHA do usuário" >
+                                                    </div>  
+                                                    
+                                                    <div class="form-group col-lg-4" >
+                                                        <label>Grupo</label>
+                                                        <select class="form-control select2" required="true" name="grupo" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
+                                                            <option value="">Selecione</option>
+                                                            <% if( grupos.length > 0 ) {%>
+                                                                <% for(var i=0; i < grupos.length; i++) {%>
+                                                                    <option value="<%= grupos[i].id %>"><%= grupos[i].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-lg-4" >
+                                                        <label>Funcionário</label>
+                                                        <select class="form-control select2" required="true" name="funcionario" data-toggle="tooltip" data-original-title="Informe o funcionário vículado ao usuário" style="width: 100%">
+                                                            <option value="">Selecione</option>
+                                                            <% if( funcionarios.length > 0 ) {%>
+                                                                <% for(var i=0; i < funcionarios.length; i++) {%>
+                                                                    <option value="<%= funcionarios[i].id %>"><%= funcionarios[i].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-lg-4" >
+                                                        <label>Empresa</label>
+                                                        <select class="form-control select2" required="true" name="empresa" style="width: 100%">
+                                                            <option value="">Selecione</option>
+                                                            <% if( empresas.length > 0 ) {%>
+                                                                <% for(var i=0; i < empresas.length; i++) {%>
+                                                                    <option value="<%= empresas[i].id %>"><%= empresas[i].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>                                        
                                         </div>
@@ -81,6 +119,9 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Grupo</th>
+                                        <th>Funcionário</th>
+                                        <th>Empresa</th>
                                         <th>
                                             <div class="tools">
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -91,82 +132,131 @@
                                 </thead>
                                 <tbody>
                                     <% for( var i = 0; i < usuarios.length; i++) {%>
-                                    <tr>
+                                        <% var grupo = grupos.filter(function(value){ return value.id == usuarios[i].grupo;})  %> 
+                                        <% var func  = funcionarios.filter(function(value){ return value.id == usuarios[i].funcionario;})  %>
+                                        <% var emp   = empresas.filter(function(value){ return value.id == usuarios[i].empresa;}) %>
                                         
-                                        <td><%= usuarios[i].nome %></td>
-                                        <td>
-                                            <div class="tools">
-                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= usuarios[i].id %>"><i class="fa fa-edit"></i></a>
-                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= usuarios[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                        <tr>
+                                            
+                                            <td><%= usuarios[i].nome %></td>
+                                            <td><%= grupo[0].nome %></td>
+                                            <td><%= func[0].nome %></td>
+                                            <td><%= emp[0].nome %></td>
+                                            <td>
+                                                <div class="tools">
+                                                    <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= usuarios[i].id %>"><i class="fa fa-edit"></i></a>
+                                                    <a href="#" data-toggle="modal" data-target="#modal-remove-<%= usuarios[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                                </div>
+                                            </td>
+                                            <div class="modal fade" id="modal-edicao-<%= usuarios[i].id %>">
+                                                <div class="modal-dialog">
+                                                    <form role="form" action="/usuarioSalvar" method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                                <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        
+                                                                        <div class="form-group col-lg-2">
+                                                                            <label>Id:</label>
+                                                                            <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= usuarios[i].id ? usuarios[i].id : '' %>">
+                                                                        </div>                                                     
+                                                                    </div>
+                                                                     <div class="row">
+                                                    
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Nome*:</label>
+                                                                            <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= usuarios[i].nome ? usuarios[i].nome : '' %>" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o NOME do usuário" autofocus >
+                                                                        </div>         
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Senha*:</label>
+                                                                            <input type="password" class="form-control" name="senha" id="senha" placeholder="" value="<%= usuarios[i].senha ? usuarios[i].senha : '' %>" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o SENHA do usuário" readonly="true" disabled >
+                                                                        </div>  
+                                                                        
+                                                                        <div class="form-group col-lg-12" >
+                                                                            <label>Grupo</label>
+                                                                            <select class="form-control select2" required="true" name="grupo" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( grupos.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < grupos.length; e++) {%>
+                                                                                        <option value="<%= grupos[e].id %>" <%= grupo.length > 0 && grupo[0].id ==  grupos[e].id ? 'selected' : '' %>><%= grupos[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-lg-12" >
+                                                                            <label>Funcionário</label>
+                                                                            <select class="form-control select2" required="true" name="funcionario" data-toggle="tooltip" data-original-title="Informe o funcionário vículado ao usuário" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( funcionarios.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < funcionarios.length; e++) {%>
+                                                                                        <option value="<%= funcionarios[e].id %>" <%= func.length > 0 && func[0].id ==  funcionarios[e].id ? 'selected' : '' %>><%= funcionarios[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-lg-12" >
+                                                                            <label>Empresa</label>
+                                                                            <select class="form-control select2" required="true" name="empresa" data-toggle="tooltip" data-original-title="Informe o empresa vículado ao usuário" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( empresas.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < empresas.length; e++) {%>
+                                                                                        <option value="<%= empresas[e].id %>" <%= emp.length > 0 && emp[0].id ==  empresas[e].id ? 'selected' : '' %>><%= empresas[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                   
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/usuario'">Cancelar</button>
+                                                                <button type="submit" class="btn btn-primary">Salvar</button>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
                                             </div>
-                                        </td>
-                                        <div class="modal fade" id="modal-edicao-<%= usuarios[i].id %>">
-                                            <div class="modal-dialog">
-                                                <form role="form" action="/usuarioalvar" method="post">
+                                            
+                                            <!-- /.modal -->
+
+                                            <!-- Excluir Registro -->
+                                            <div class="modal modal-danger fade" id="modal-remove-<%= usuarios[i].id %>">
+                                                <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
-                                                            <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                            <h4 class="modal-title">Excluir Registro</h4>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="container-fluid">
-                                                                <div class="row">
-                                                                    
-                                                                    <div class="form-group col-lg-2">
-                                                                        <label>Id:</label>
-                                                                        <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= usuarios[i].id ? usuarios[i].id : '' %>">
-                                                                    </div>                                        
-                                                                    <div class="form-group col-lg-10">
-                                                                        <label>Nome *:</label>
-                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= usuarios[i].nome ? usuarios[i].nome : '' %>" required="true" autofocus>
-                                                                    </div>                                                                
-                                                                </div>
-                                                            </div>
+                                                            <p>Deseja deletar o registro?</p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/usuario'">Cancelar</button>
-                                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                                            <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/usuario">
+                                                                Cancelar
+                                                            </a>
+                                                            <a class="btn btn-outline" href="/usuarioExcluir/<%=  usuarios[i].id   %>">
+                                                                Excluir
+                                                            </a>
                                                         </div>
-                                                        
                                                     </div>
-                                                </form>
-                                                <!-- /.modal-content -->
-                                            </div>
-                                            <!-- /.modal-dialog -->
-                                        </div>
-                                        
-                                        <!-- /.modal -->
-
-                                        <!-- Excluir Registro -->
-                                        <div class="modal modal-danger fade" id="modal-remove-<%= usuarios[i].id %>">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                        <h4 class="modal-title">Excluir Registro</h4>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Deseja deletar o registro?</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/usuario">
-                                                            Cancelar
-                                                        </a>
-                                                        <a class="btn btn-outline" href="/usuarioExcluir/<%=  usuarios[i].id   %>">
-                                                            Excluir
-                                                        </a>
-                                                    </div>
+                                                    <!-- /.modal-content -->
                                                 </div>
-                                                <!-- /.modal-content -->
+                                                <!-- /.modal-dialog -->
                                             </div>
-                                            <!-- /.modal-dialog -->
-                                        </div>
-                                        <!-- /.modal -->
-                                    </tr>
+                                            <!-- /.modal -->
+                                        </tr>
                                     <% } %>    
                                 </tbody>
                             </table>

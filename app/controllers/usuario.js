@@ -1,23 +1,33 @@
 module.exports.index = function( application, req, res ){
     
+    if( req.session.usuario == undefined ) {
+		res.redirect("/login");
+		return;			
+    }
+    
     var connection = application.config.dbConnection();
     var usuarioDao = new application.app.models.UsuarioDAO(connection);
     var grupoDao = new application.app.models.GrupoDAO(connection);
     var empresaDao = new application.app.models.EmpresaDAO(connection);
+    var funcionarioDao = new application.app.models.FuncionarioDAO(connection);
+    
     
     empresaDao.listar(function(error, empresas){        
     
         grupoDao.listar(function(error, grupos){
-        
-            usuarioDao.listar(function(error, usuarios){
 
-                connection.end();
-                if( error ) {
-                    res.render('usuario', { validacao : [ {'msg': error }], usuarios : {}, empresas:empresas, grupos:grupos, sessao: {}  });
-                    return;
-                }
-                res.render('usuario', { validacao : {}, usuarios : usuarios, empresas:empresas, grupos:grupos, sessao: {} });            
-            });
+            funcionarioDao.listar(function(error, funcionarios){
+        
+                usuarioDao.listar(function(error, usuarios){
+
+                    connection.end();
+                    if( error ) {
+                        res.render('usuario', { validacao : [ {'msg': error }], usuarios : {}, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: {}  });
+                        return;
+                    }
+                    res.render('usuario', { validacao : {}, usuarios : usuarios, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: {} });            
+                });
+            })
         });
     });
 }
@@ -101,7 +111,8 @@ module.exports.excluir = function( application, req, res ){
 }
 
 module.exports.salvar = function( application, req, res ){
-    
+    var crypto = require('crypto');
+
     var dadosForms = req.body;
 
     req.assert('nome', 'Nome é obrigatório!').notEmpty();       
@@ -111,6 +122,11 @@ module.exports.salvar = function( application, req, res ){
     if(erros){
         res.render('usuario', {validacao: erros,  usuarios: [dadosForms], sessao: {}});
         return;
+    }
+    
+    if( dadosForms.senha ) {
+        var senha_criptografada = crypto.createHash("md5").update(dadosForms.senha).digest("hex");
+        dadosForms.senha = senha_criptografada;
     }
     
     var connection = application.config.dbConnection();

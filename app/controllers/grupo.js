@@ -1,5 +1,9 @@
 module.exports.index = function( application, req, res ){
     
+    if( req.session.usuario == undefined ) {
+		res.redirect("/login");
+		return;			
+    }
     var connection = application.config.dbConnection();
     var grupoDao = new application.app.models.GrupoDAO(connection);
     
