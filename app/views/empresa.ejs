@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <% include /templates/head %>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <% include /templates/header %>
+            <div class="content-wrapper">
+                <!-- escrever conteúdo do sistema -->
+                <section class="content-header">
+                    <h1>
+                        CADASTRO DE EMPRESA
+                        <small>LISTAGEM DE EMPRESA</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-dashboard"></i> Dashboard</a>
+                        </li>
+                        <li class="active">Empresa</li>
+                    </ol>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+
+                    <!-- Default box -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                    <button type="button" class="btn btn-success btn-flat"  data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus-square"></i></button>
+                                    INCLUIR NOVO REGISTRO
+                            </h3>
+                        
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>                                
+                        </div>
+                        <div class="modal fade" id="modal-default">
+                            <div class="modal-dialog">
+                                <form role="form" action="/empresaSalvar" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">NOVO REGISTRO</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">                                                    
+                                                    <div class="form-group col-lg-4">
+                                                        <label>Cnpj*:</label>
+                                                        <input type="text" class="form-control" name="cnpj" id="cnpj" placeholder="" value="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCNPJ(this);" data-toggle="tooltip" data-original-title="Informe o CNPJ da empresa" autofocus >
+                                                    </div>  
+                                                    <div class="form-group col-lg-8">
+                                                        <label>Nome*:</label>
+                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="Informe o nome da empresa" >
+                                                    </div>    
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Fone:</label>
+                                                        <input type="tel" class="form-control" name="fone" id="fone" placeholder="" value="" MaxLength="20" onkeyup="formataTelefone(this,event);" autocomplete="off">
+                                                    </div>  
+                                                    <div class="form-group col-lg-6">
+                                                        <label>E-mail:</label>
+                                                        <input type="email" class="form-control" name="email" id="email" placeholder="" value="" MaxLength="200" autocomplete="off">
+                                                    </div>                                              
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-lg-3">
+                                                        <label>Cep:</label>
+                                                        <input type="text" class="form-control" name="cep" id="cep" placeholder="" value="" autocomplete="off" MaxLength="9" onkeyup="formataCEP(this,event);">
+                                                    </div>
+                                                    <div class="form-group col-lg-7">
+                                                        <label>Endereço:</label>
+                                                        <input type="text" class="form-control" name="endereco" id="endereco" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                    </div> 
+                                                    <div class="form-group col-lg-2">
+                                                        <label>Número:</label>
+                                                        <input type="text" class="form-control" name="numero" id="numero" placeholder="" value="" autocomplete="off" MaxLength="30">
+                                                    </div> 
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Complemento:</label>
+                                                        <input type="text" class="form-control" name="complemento" id="complemento" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                    </div>
+                                                    <div class="form-group col-lg-2">
+                                                        <label>Uf</label>
+                                                        <select class="form-control" style="width: 100%;">
+                                                            <option value="">UF</option>
+                                                            <option value="AC">AC</option>
+                                                            <option value="AL">AL</option>
+                                                            <option value="AP">AP</option>
+                                                            <option value="AM">AM</option>
+                                                            <option value="BA">BA</option>
+                                                            <option value="CE">CE</option>
+                                                            <option value="DF">DF</option>
+                                                            <option value="GO">GO</option>
+                                                            <option value="MA">MA</option>
+                                                            <option value="MT">MT</option>
+                                                            <option value="MS">MS</option>
+                                                            <option value="MG">MG</option>
+                                                            <option value="PA">PA</option>
+                                                            <option value="PB">PB</option>
+                                                            <option value="PR">PR</option>
+                                                            <option value="PE">PE</option>
+                                                            <option value="PI">PI</option>
+                                                            <option value="RJ">RJ</option>
+                                                            <option value="RN">RN</option>
+                                                            <option value="RS">RS</option>
+                                                            <option value="RO">RO</option>
+                                                            <option value="SC">SC</option>
+                                                            <option value="SP">SP</option>
+                                                            <option value="SE">SE</option>
+                                                            <option value="TO">TO</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-lg-5">
+                                                        <label>Bairro:</label>
+                                                        <input type="text" class="form-control" name="bairro" id="bairro" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                    </div>
+                                                    <div class="form-group col-lg-5">
+                                                        <label>Cidade:</label>
+                                                        <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                    </div>
+                                                          
+
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/empresa'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
+                        <div class="box-body">
+                            <table id="grddados" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cnpj</th>
+                                        <th>Nome</th>
+                                        <th>Fone</th>
+                                        <th>E-mail</th>
+                                        <th>Uf</th>
+                                        <th>
+                                            <div class="tools">
+                                                <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
+                                                <a data-toggle="tooltip" data-original-title="Excluir Registro"><i class="fa fa-trash-o"></i></a> 
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for( var i = 0; i < empresas.length; i++) {%>
+                                    <tr>
+                                        <td><%= empresas[i].cnpj %></td> 
+                                        <td><%= empresas[i].nome %></td>
+                                        <td><%= empresas[i].fone %></td>
+                                        <td><%= empresas[i].email %></td>
+                                        <td><%= empresas[i].uf %></td>
+                                        <td>
+                                            <div class="tools">
+                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= empresas[i].id %>" data-original-title="Remove"><i class="fa fa-edit"></i></a>
+                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= empresas[i].id %>" data-original-title="Remove"><i class="fa fa-trash-o"></i></a> 
+                                            </div>
+                                        </td>
+                                        <div class="modal fade" id="modal-edicao-<%= empresas[i].id %>">
+                                            <div class="modal-dialog">
+                                                <form role="form" action="/empresaSalvar" method="post">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container-fluid">
+                                                                    
+                                                                <div class="row">
+                                                                    <div class="form-group col-lg-4">
+                                                                        <label>Id:</label>
+                                                                        <input type="text" class="form-control" name="id" id="id" placeholder="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" readonly="true" value="<%= empresas[i].id ? empresas[i].id : '' %>">
+                                                                    </div>  
+                                                                </div>
+                                                                <div class="row">                                                    
+                                                                    <div class="form-group col-lg-4">
+                                                                        <label>Cnpj*:</label>
+                                                                        <input type="text" class="form-control" name="cnpj" id="cnpj" placeholder="" autocomplete="off" required="true" onkeypress="formataCNPJ(this);" MaxLength="18" OnChange="formataCNPJ(this);" value="<%= empresas[i].cnpj ? empresas[i].cnpj : '' %>" data-toggle="tooltip" data-original-title="Informe o CNPJ da empresa" autofocus >
+                                                                    </div>   
+                                                                    <div class="form-group col-lg-8">
+                                                                        <label>Nome*:</label>
+                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= empresas[i].nome  %>" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="Informe o nome da empresa">
+                                                                    </div>    
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label>Fone:</label>
+                                                                        <input type="tel" class="form-control" name="fone" id="fone" placeholder="" value="<%= empresas[i].fone ? empresas[i].fone : '' %>" MaxLength="20" onkeyup="formataTelefone(this,event);" autocomplete="off">
+                                                                    </div>  
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label>E-mail:</label>
+                                                                        <input type="email" class="form-control" name="email" id="email" placeholder="" value="<%= empresas[i].email ? empresas[i].email : '' %>" MaxLength="200" autocomplete="off">
+                                                                    </div>                                              
+                                                                </div>
+                                                                <div class="row">
+                                                                <div class="form-group col-lg-3">
+                                                                    <label>Cep:</label>
+                                                                    <input type="text" class="form-control" name="cep" id="cep" placeholder="" value="" autocomplete="off" MaxLength="9" onkeyup="formataCEP(this,event);">
+                                                                </div>
+                                                                <div class="form-group col-lg-7">
+                                                                    <label>Endereço:</label>
+                                                                    <input type="text" class="form-control" name="endereco" id="endereco" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                                </div> 
+                                                                <div class="form-group col-lg-2">
+                                                                    <label>Número:</label>
+                                                                    <input type="text" class="form-control" name="numero" id="numero" placeholder="" value="" autocomplete="off" MaxLength="30">
+                                                                </div> 
+                                                                <div class="form-group col-lg-12">
+                                                                    <label>Complemento:</label>
+                                                                    <input type="text" class="form-control" name="complemento" id="complemento" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                                </div>
+                                                                <div class="form-group col-lg-2">
+                                                                    <label>Uf</label>
+                                                                    <select class="form-control" style="width: 100%;">
+                                                                        <option value="">Uf</option>
+                                                                        <option value="AC">AC</option>
+                                                                        <option value="AL">AL</option>
+                                                                        <option value="AP">AP</option>
+                                                                        <option value="AM">AM</option>
+                                                                        <option value="BA">BA</option>
+                                                                        <option value="CE">CE</option>
+                                                                        <option value="DF">DF</option>
+                                                                        <option value="GO">GO</option>
+                                                                        <option value="MA">MA</option>
+                                                                        <option value="MT">MT</option>
+                                                                        <option value="MS">MS</option>
+                                                                        <option value="MG">MG</option>
+                                                                        <option value="PA">PA</option>
+                                                                        <option value="PB">PB</option>
+                                                                        <option value="PR">PR</option>
+                                                                        <option value="PE">PE</option>
+                                                                        <option value="PI">PI</option>
+                                                                        <option value="RJ">RJ</option>
+                                                                        <option value="RN">RN</option>
+                                                                        <option value="RS">RS</option>
+                                                                        <option value="RO">RO</option>
+                                                                        <option value="SC">SC</option>
+                                                                        <option value="SP">SP</option>
+                                                                        <option value="SE">SE</option>
+                                                                        <option value="TO">TO</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group col-lg-5">
+                                                                    <label>Bairro:</label>
+                                                                    <input type="text" class="form-control" name="bairro" id="bairro" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                                </div>
+                                                                <div class="form-group col-lg-5">
+                                                                    <label>Cidade:</label>
+                                                                    <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                                </div>
+                                                                    
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/empresa'">Cancelar</button>
+                                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </form>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        
+                                        <!-- /.modal -->
+
+                                        <!-- Excluir Registro -->
+                                        <div class="modal modal-danger fade" id="modal-remove-<%= empresas[i].id %>">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        <h4 class="modal-title">Excluir Registro</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Deseja deletar o registro?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/empresa">
+                                                            Cancelar
+                                                        </a>
+                                                        <a class="btn btn-outline" href="/empresaExcluir/<%=  empresas[i].id   %>">
+                                                            Excluir
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        <!-- /.modal -->
+                                    </tr>
+                                    <% } %>    
+                                </tbody>
+                            </table>
+                        
+                            <div class="ajax-content">
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                        
+                        </div>
+                        <!-- /.box-footer-->
+                    </div>
+                    <!-- /.box -->
+
+                </section>
+                <!-- /.content -->
+
+            </div>
+
+            <!-- /.content-wrapper -->
+            <% include /templates/footer %>
+
+            <div class="control-sidebar-bg"></div>
+        </div>
+    </body>
+    <% include /templates/scripts %>
+
+</html>
