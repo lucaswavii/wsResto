@@ -11,10 +11,10 @@ module.exports.index = function( application, req, res ){
     empresaDao.listar(function(error, empresas){
         connection.end();
         if( error ) {
-            res.render('empresa', { validacao : [ {'msg': error }], empresas : {}, sessao: {}  });
+            res.render('empresa', { validacao : [ {'msg': error }], empresas : {}, sessao: req.session.usuario  });
             return;
         }
-        res.render('empresa', { validacao : {}, empresas : empresas, sessao: {} });
+        res.render('empresa', { validacao : {}, empresas : empresas, sessao: req.session.usuario });
     
     });
 }
@@ -29,7 +29,7 @@ module.exports.editar = function( application, req, res ){
     if( !id ) {
         empresaDao.listar(function(error, empresas){
             connection.end();
-            res.render('empresa', { validacao : [ {'msg': 'ID de edição não foi informado.' }], empresas : empresas, sessao: {}  });
+            res.render('empresa', { validacao : [ {'msg': 'ID de edição não foi informado.' }], empresas : empresas, sessao: req.session.usuario  });
             return;
         });
     }
@@ -39,12 +39,12 @@ module.exports.editar = function( application, req, res ){
         if( error ) {
             empresaDao.listar(function(error, empresas){
                 connection.end();
-                res.render('empresa', { validacao : [ {'msg': error }], empresas : empresas, sessao: {}  });
+                res.render('empresa', { validacao : [ {'msg': error }], empresas : empresas, sessao: req.session.usuario  });
                 return;
             });
         }
         connection.end();
-        res.render('empresa', { validacao : {}, empresas : result, sessao: {} });
+        res.render('empresa', { validacao : {}, empresas : result, sessao: req.session.usuario });
         return;
     });
 }
@@ -57,7 +57,7 @@ module.exports.excluir = function( application, req, res ){
     var id = req.params._id;
     
     if( !id ) {
-        res.render('empresa', { validacao : [ {'msg': 'ID de edição não foi informado.' }], empresas : {}, sessao: {}  });
+        res.render('empresa', { validacao : [ {'msg': 'ID de edição não foi informado.' }], empresas : {}, sessao: req.session.usuario  });
         return;
     }
 
@@ -69,9 +69,9 @@ module.exports.excluir = function( application, req, res ){
 
                 if(error.errno != undefined && error.errno == 1451) { 
                     connection.end();
-                    res.render('empresa', { validacao : [ {'msg': "Não se pode excluir dados com vínculos em outras tabelas." }], empresas : empresas, sessao: {}  });
+                    res.render('empresa', { validacao : [ {'msg': "Não se pode excluir dados com vínculos em outras tabelas." }], empresas : empresas, sessao: req.session.usuario  });
                 } else {                
-                    res.render('empresa', { validacao : [ {'msg': error }], empresas : empresas, sessao: {}   });
+                    res.render('empresa', { validacao : [ {'msg': error }], empresas : empresas, sessao: req.session.usuario   });
                     return;
                 }
             });
@@ -90,7 +90,7 @@ module.exports.salvar = function( application, req, res ){
     var erros = req.validationErrors();
 
     if(erros){
-        res.render('empresa', {validacao: erros,  empresas: [dadosForms], sessao: {}});
+        res.render('empresa', {validacao: erros,  empresas: [dadosForms], sessao: req.session.usuario});
         return;
     }
     
@@ -104,7 +104,7 @@ module.exports.salvar = function( application, req, res ){
             console.log(error)
             empresaDao.listar(function(error, empresas){      
                 connection.end();               
-                res.render('empresa', { validacao : error, empresas : empresas, sessao: {} });
+                res.render('empresa', { validacao : error, empresas : empresas, sessao: req.session.usuario });
                 return;
             });
         }

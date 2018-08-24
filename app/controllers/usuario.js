@@ -22,10 +22,10 @@ module.exports.index = function( application, req, res ){
 
                     connection.end();
                     if( error ) {
-                        res.render('usuario', { validacao : [ {'msg': error }], usuarios : {}, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: {}  });
+                        res.render('usuario', { validacao : [ {'msg': error }], usuarios : {}, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: req.session.usuario  });
                         return;
                     }
-                    res.render('usuario', { validacao : {}, usuarios : usuarios, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: {} });            
+                    res.render('usuario', { validacao : {}, usuarios : usuarios, empresas:empresas, grupos:grupos, funcionarios:funcionarios, sessao: req.session.usuario });            
                 });
             })
         });
@@ -49,7 +49,7 @@ module.exports.editar = function( application, req, res ){
                 usuarioDao.listar(function(error, usuarios){
 
                     connection.end();
-                    res.render('usuario', { validacao : [ {'msg': 'ID de edição não foi informado.' }], usuarios : usuarios, empresas:empresas, grupos:grupos, sessao: {}  });
+                    res.render('usuario', { validacao : [ {'msg': 'ID de edição não foi informado.' }], usuarios : usuarios, empresas:empresas, grupos:grupos, sessao: req.session.usuario  });
                     return;
                 });
             });
@@ -67,7 +67,7 @@ module.exports.editar = function( application, req, res ){
     
           
                         connection.end();
-                        res.render('usuario', { validacao : [ {'msg': error }], usuarios : usuarios, empresas:empresas, grupos:grupos, sessao: {}  });
+                        res.render('usuario', { validacao : [ {'msg': error }], usuarios : usuarios, empresas:empresas, grupos:grupos, sessao: req.session.usuario  });
                         return;
                     });
                 });
@@ -86,7 +86,7 @@ module.exports.excluir = function( application, req, res ){
     var id = req.params._id;
     
     if( !id ) {
-        res.render('usuario', { validacao : [ {'msg': 'ID de edição não foi informado.' }], usuarios : {}, sessao: {}  });
+        res.render('usuario', { validacao : [ {'msg': 'ID de edição não foi informado.' }], usuarios : {}, sessao: req.session.usuario  });
         return;
     }
 
@@ -98,9 +98,9 @@ module.exports.excluir = function( application, req, res ){
 
                 if(error.errno != undefined && error.errno == 1451) { 
                     connection.end();
-                    res.render('usuario', { validacao : [ {'msg': "Não se pode excluir dados com vínculos em outras tabelas." }], usuarios : usuarios, sessao: {}  });
+                    res.render('usuario', { validacao : [ {'msg': "Não se pode excluir dados com vínculos em outras tabelas." }], usuarios : usuarios, sessao: req.session.usuario  });
                 } else {                
-                    res.render('usuario', { validacao : [ {'msg': error }], usuarios : usuarios, sessao: {}   });
+                    res.render('usuario', { validacao : [ {'msg': error }], usuarios : usuarios, sessao: req.session.usuario   });
                     return;
                 }
             });
@@ -120,7 +120,7 @@ module.exports.salvar = function( application, req, res ){
     var erros = req.validationErrors();
 
     if(erros){
-        res.render('usuario', {validacao: erros,  usuarios: [dadosForms], sessao: {}});
+        res.render('usuario', {validacao: erros,  usuarios: [dadosForms], sessao: req.session.usuario});
         return;
     }
     
@@ -139,7 +139,7 @@ module.exports.salvar = function( application, req, res ){
             
             usuarioDao.listar(function(error, usuarios){      
                 connection.end();               
-                res.render('usuario', { validacao : error, usuarios : usuarios, empresas: {}, sessao: {} });
+                res.render('usuario', { validacao : error, usuarios : usuarios, empresas: {}, sessao: req.session.usuario });
                 return;
             });
         }

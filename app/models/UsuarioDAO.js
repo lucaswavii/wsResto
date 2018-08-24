@@ -11,7 +11,7 @@ UsuarioDAO.prototype.login = function( usuario, callback) {
 	sql += 		' inner join EMPRESA empresa on ( empresa.id = usuario.empresa )'
 	sql += 		' where usuario.nome = ? and usuario.senha = ? '
 	
-	this._connection.query(sql, usuario, callback);	
+	this._connection.query(sql, [ usuario.nome, usuario.senha], callback);	
 }
 
 UsuarioDAO.prototype.listar = function( callback) {
