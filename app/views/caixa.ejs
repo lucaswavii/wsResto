@@ -14,15 +14,15 @@
                 <!-- escrever conteúdo do sistema -->
                 <section class="content-header">
                     <h1>
-                        CADASTRO DE GRUPO
-                        <small>LISTAGEM DE GRUPO</small>
+                        CADASTRO DE CAIXA
+                        <small>LISTAGEM DE CAIXA</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li>
                             <a href="#">
                                 <i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
-                        <li class="active">Grupo</li>
+                        <li class="active">Caixa</li>
                     </ol>
                 </section>
                 <!-- Main content -->
@@ -44,7 +44,7 @@
                         </div>
                         <div class="modal fade" id="modal-default">
                             <div class="modal-dialog">
-                                <form role="form" action="/grupoSalvar" method="post">
+                                <form role="form" action="/caixaSalvar" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -59,13 +59,29 @@
                                                     <div class="form-group col-lg-12">
                                                         <label>Nome*:</label>
                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" autofocus >
-                                                    </div>                                                
+                                                    </div> 
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Ip*:</label>
+                                                        <input type="text" class="form-control" name="ip" id="ip" placeholder="" value="" autocomplete="off" required="true" MaxLength="30" >
+                                                    </div>
+                                                    <div class="form-group col-lg-6" >
+                                                        <label>Empresa:</label>
+                                                        <select class="form-control" required="true" name="empresa">
+                                                            
+                                                            <% if( empresas.length > 0 ) {%>
+                                                                <% for(var e=0; e < empresas.length; e++) {%>
+                                                                    <option value="<%= empresas[e].id %>"><%= empresas[e].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>   
+                                                                                                 
                                                 </div>
                                             </div>                                        
                                         </div>
                                         
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/grupo'">Cancelar</button>
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/caixa'">Cancelar</button>
                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                         </div>
                                     </div>
@@ -81,6 +97,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Ip</th>
+                                        <th>Empresa</th>
                                         <th>
                                             <div class="tools">
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -90,19 +108,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% for( var i = 0; i < grupos.length; i++) {%>
+                                    <% for( var i = 0; i < caixas.length; i++) {%>
                                     <tr>
+                                        <% var empresa = empresas.filter(function(value){ return value.id == caixas[i].empresa;})  %> 
                                         
-                                        <td><%= grupos[i].nome %></td>
+                                        <td><%= caixas[i].nome %></td>
+                                        <td><%= caixas[i].ip %></td>
+                                        <td><%= empresa[0].nome %></td>
                                         <td>
                                             <div class="tools">
-                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= grupos[i].id %>"><i class="fa fa-edit"></i></a>
-                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= grupos[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= caixas[i].id %>"><i class="fa fa-edit"></i></a>
+                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= caixas[i].id %>"><i class="fa fa-trash-o"></i></a> 
                                             </div>
                                         </td>
-                                        <div class="modal fade" id="modal-edicao-<%= grupos[i].id %>">
+                                        <div class="modal fade" id="modal-edicao-<%= caixas[i].id %>">
                                             <div class="modal-dialog">
-                                                <form role="form" action="/grupoSalvar" method="post">
+                                                <form role="form" action="/caixaSalvar" method="post">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -113,20 +134,35 @@
                                                         <div class="modal-body">
                                                             <div class="container-fluid">
                                                                 <div class="row">
-                                                                    
-                                                                    <div class="form-group col-lg-2">
+                                                                    <div class="form-group col-lg-12">
                                                                         <label>Id:</label>
-                                                                        <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= grupos[i].id ? grupos[i].id : '' %>">
-                                                                    </div>                                        
-                                                                    <div class="form-group col-lg-10">
-                                                                        <label>Nome *:</label>
-                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= grupos[i].nome ? grupos[i].nome : '' %>" required="true" autofocus>
-                                                                    </div>                                                                
+                                                                        <input type="text" class="form-control" name="id" id="id" placeholder="" value="<%= caixas[i].id ? caixas[i].id : '' %>" autocomplete="off" required="true" MaxLength="200" readonly="true" >
+                                                                    </div>
+                                                                    <div class="form-group col-lg-12">
+                                                                        <label>Nome*:</label>
+                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= caixas[i].nome ? caixas[i].nome : '' %>" autocomplete="off" required="true" MaxLength="200" autofocus >
+                                                                    </div> 
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label>Ip*:</label>
+                                                                        <input type="text" class="form-control" name="ip" id="ip" placeholder="" value="<%= caixas[i].ip ? caixas[i].ip : '' %>" autocomplete="off" required="true" MaxLength="30" >
+                                                                    </div>
+                                                                    <div class="form-group col-lg-6" >
+                                                                        <label>Empresa:</label>
+                                                                        <select class="form-control" required="true" name="empresa" readonly="true">
+                                                                            
+                                                                            <% if( empresas.length > 0 ) {%>
+                                                                                <% for(var e=0; e < empresas.length; e++) {%>
+                                                                                    <option value="<%= empresas[e].id %>" <%= caixas[i].empresa == empresas[e].id ? 'selected' : '' %>><%= empresas[e].nome %></option>
+                                                                                <% } %>
+                                                                            <% } %>
+                                                                        </select>
+                                                                    </div>   
+                                                                                                 
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/grupo'">Cancelar</button>
+                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/caixa'">Cancelar</button>
                                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                                         </div>
                                                         
@@ -140,7 +176,7 @@
                                         <!-- /.modal -->
 
                                         <!-- Excluir Registro -->
-                                        <div class="modal modal-danger fade" id="modal-remove-<%= grupos[i].id %>">
+                                        <div class="modal modal-danger fade" id="modal-remove-<%= caixas[i].id %>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -153,10 +189,10 @@
                                                         <p>Deseja deletar o registro?</p>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/grupo">
+                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/caixa">
                                                             Cancelar
                                                         </a>
-                                                        <a class="btn btn-outline" href="/grupoExcluir/<%=  grupos[i].id   %>">
+                                                        <a class="btn btn-outline" href="/caixaExcluir/<%=  caixas[i].id   %>">
                                                             Excluir
                                                         </a>
                                                     </div>

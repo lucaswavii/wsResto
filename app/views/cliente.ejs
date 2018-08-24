@@ -14,15 +14,15 @@
                 <!-- escrever conteúdo do sistema -->
                 <section class="content-header">
                     <h1>
-                        CADASTRO DE FUNCIONARIO
-                        <small>LISTAGEM DE FUNCIONARIO</small>
+                        CADASTRO DE CLIENTES
+                        <small>LISTAGEM DE CLIENTES</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li>
                             <a href="#">
                                 <i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
-                        <li class="active">Funcionário</li>
+                        <li class="active">Clientes</li>
                     </ol>
                 </section>
                 <!-- Main content -->
@@ -44,7 +44,7 @@
                         </div>
                         <div class="modal fade" id="modal-default">
                             <div class="modal-dialog">
-                                <form role="form" action="/funcionarioSalvar" method="post">
+                                <form role="form" action="/clienteSalvar" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -56,8 +56,8 @@
                                             <div class="container-fluid">
                                                 <div class="row">                                                    
                                                     <div class="form-group col-lg-4">
-                                                        <label>Cpf*:</label>
-                                                        <input type="text" class="form-control" name="cpf" id="cpf" placeholder="" value="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCPF(this);" autofocus >
+                                                        <label>Cpf ou Cnpj*:</label>
+                                                        <input type="text" class="form-control" name="cgccpf" id="cgccpf" placeholder="" value="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="AplicarMascaraCpfCnpj(this);" autofocus >
                                                     </div>  
                                                     <div class="form-group col-lg-8">
                                                         <label>Nome*:</label>
@@ -135,7 +135,7 @@
                                         </div>
                                         
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/funcionario'">Cancelar</button>
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/cliente'">Cancelar</button>
                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                         </div>
                                     </div>
@@ -165,23 +165,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% for( var i = 0; i < funcionarios.length; i++) {%>
+                                    <% for( var i = 0; i < clientes.length; i++) {%>
                                     <tr>
                                         
-                                        <td><%= funcionarios[i].nome %></td>
-                                        <td><%= funcionarios[i].cpf %></td> 
-                                        <td><%= funcionarios[i].fone %></td>
-                                        <td><%= funcionarios[i].email %></td>
-                                        <td><%= funcionarios[i].uf %></td>
+                                        <td><%= clientes[i].nome %></td>
+                                        <td><%= clientes[i].cgccpf %></td> 
+                                        <td><%= clientes[i].fone %></td>
+                                        <td><%= clientes[i].email %></td>
+                                        <td><%= clientes[i].uf %></td>
                                         <td>
                                             <div class="tools">
-                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= funcionarios[i].id %>" data-original-title="Remove"><i class="fa fa-edit"></i></a>
-                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= funcionarios[i].id %>" data-original-title="Remove"><i class="fa fa-trash-o"></i></a> 
+                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= clientes[i].id %>" data-original-title="Remove"><i class="fa fa-edit"></i></a>
+                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= clientes[i].id %>" data-original-title="Remove"><i class="fa fa-trash-o"></i></a> 
                                             </div>
                                         </td>
-                                        <div class="modal fade" id="modal-edicao-<%= funcionarios[i].id %>">
+                                        <div class="modal fade" id="modal-edicao-<%= clientes[i].id %>">
                                             <div class="modal-dialog">
-                                                <form role="form" action="/funcionarioalvar" method="post">
+                                                <form role="form" action="/clienteSalvar" method="post">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -195,25 +195,25 @@
                                                                 <div class="row">
                                                                     <div class="form-group col-lg-4">
                                                                         <label>Id:</label>
-                                                                        <input type="text" class="form-control" name="id" id="id" placeholder="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCPF(this);" value="<%= funcionarios[i].id  %>" readonly="true">
+                                                                        <input type="text" class="form-control" name="id" id="id" placeholder="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCPF(this);" value="<%= clientes[i].id  %>" readonly="true">
                                                                     </div>  
                                                                 </div>
                                                                 <div class="row">                                                    
                                                                     <div class="form-group col-lg-4">
-                                                                        <label>Cpf*:</label>
-                                                                        <input type="text" class="form-control" name="cpf" id="cpf" placeholder="" value="<%= funcionarios[i].cpf  %>" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCPF(this);" autofocus >
+                                                                        <label>Cpf ou Cnpj*:</label>
+                                                                        <input type="text" class="form-control" name="cgccpf" id="cgccpf" placeholder="" value="<%= clientes[i].cgccpf  %>" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="formataCPF(this);" autofocus >
                                                                     </div>  
                                                                     <div class="form-group col-lg-8">
                                                                         <label>Nome*:</label>
-                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= funcionarios[i].nome  %>" autocomplete="off" MaxLength="200" required="true">
+                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= clientes[i].nome  %>" autocomplete="off" MaxLength="200" required="true">
                                                                     </div>    
                                                                     <div class="form-group col-lg-6">
                                                                         <label>Fone:</label>
-                                                                        <input type="tel" class="form-control" name="fone" id="fone" placeholder="" value="<%= funcionarios[i].fone ? funcionarios[i].fone : '' %>" MaxLength="20" onkeyup="formataTelefone(this,event);" autocomplete="off">
+                                                                        <input type="tel" class="form-control" name="fone" id="fone" placeholder="" value="<%= clientes[i].fone ? clientes[i].fone : '' %>" MaxLength="20" onkeyup="formataTelefone(this,event);" autocomplete="off">
                                                                     </div>  
                                                                     <div class="form-group col-lg-6">
                                                                         <label>E-mail:</label>
-                                                                        <input type="email" class="form-control" name="email" id="email" placeholder="" value="<%= funcionarios[i].email ? funcionarios[i].email : '' %>" MaxLength="200" autocomplete="off">
+                                                                        <input type="email" class="form-control" name="email" id="email" placeholder="" value="<%= clientes[i].email ? clientes[i].email : '' %>" MaxLength="200" autocomplete="off">
                                                                     </div>                                              
                                                                 </div>
                                                                 <div class="row">
@@ -278,7 +278,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/funcionario'">Cancelar</button>
+                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/cliente'">Cancelar</button>
                                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                                         </div>
                                                         
@@ -292,7 +292,7 @@
                                         <!-- /.modal -->
 
                                         <!-- Excluir Registro -->
-                                        <div class="modal modal-danger fade" id="modal-remove-<%= funcionarios[i].id %>">
+                                        <div class="modal modal-danger fade" id="modal-remove-<%= clientes[i].id %>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -305,10 +305,10 @@
                                                         <p>Deseja deletar o registro?</p>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/funcionario">
+                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/cliente">
                                                             Cancelar
                                                         </a>
-                                                        <a class="btn btn-outline" href="/funcionarioExcluir/<%=  funcionarios[i].id   %>">
+                                                        <a class="btn btn-outline" href="/clienteExcluir/<%=  clientes[i].id   %>">
                                                             Excluir
                                                         </a>
                                                     </div>

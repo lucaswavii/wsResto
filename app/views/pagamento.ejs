@@ -14,15 +14,15 @@
                 <!-- escrever conteúdo do sistema -->
                 <section class="content-header">
                     <h1>
-                        CADASTRO DE GRUPO
-                        <small>LISTAGEM DE GRUPO</small>
+                        CADASTRO DE PAGAMENTO
+                        <small>LISTAGEM DE PAGAMENTO</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li>
                             <a href="#">
                                 <i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
-                        <li class="active">Grupo</li>
+                        <li class="active">Pagamento</li>
                     </ol>
                 </section>
                 <!-- Main content -->
@@ -44,7 +44,7 @@
                         </div>
                         <div class="modal fade" id="modal-default">
                             <div class="modal-dialog">
-                                <form role="form" action="/grupoSalvar" method="post">
+                                <form role="form" action="/pagamentoSalvar" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -59,13 +59,22 @@
                                                     <div class="form-group col-lg-12">
                                                         <label>Nome*:</label>
                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" autofocus >
+                                                    </div>  
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Formula*:</label>
+                                                        <input type="text" class="form-control" name="formula" id="formula" placeholder="" value="" autocomplete="off" required="true" MaxLength="45" >
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="financeiro"> Gerar Título ?
+                                                        </label>
                                                     </div>                                                
                                                 </div>
                                             </div>                                        
                                         </div>
                                         
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/grupo'">Cancelar</button>
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/pagamento'">Cancelar</button>
                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                         </div>
                                     </div>
@@ -81,6 +90,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Formula</th>
+                                        <th>Financeiro</th>
                                         <th>
                                             <div class="tools">
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -90,19 +101,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% for( var i = 0; i < grupos.length; i++) {%>
+                                    <% for( var i = 0; i < pagamentos.length; i++) {%>
                                     <tr>
                                         
-                                        <td><%= grupos[i].nome %></td>
+                                        <td><%= pagamentos[i].nome %></td>
+                                        <td><%= pagamentos[i].formula %></td>
+                                        <td><%= pagamentos[i].financeiro %></td>
                                         <td>
                                             <div class="tools">
-                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= grupos[i].id %>"><i class="fa fa-edit"></i></a>
-                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= grupos[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                                <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= pagamentos[i].id %>"><i class="fa fa-edit"></i></a>
+                                                <a href="#" data-toggle="modal" data-target="#modal-remove-<%= pagamentos[i].id %>"><i class="fa fa-trash-o"></i></a> 
                                             </div>
                                         </td>
-                                        <div class="modal fade" id="modal-edicao-<%= grupos[i].id %>">
+                                        <div class="modal fade" id="modal-edicao-<%= pagamentos[i].id %>">
                                             <div class="modal-dialog">
-                                                <form role="form" action="/grupoSalvar" method="post">
+                                                <form role="form" action="/pagamentoSalvar" method="post">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -116,17 +129,30 @@
                                                                     
                                                                     <div class="form-group col-lg-2">
                                                                         <label>Id:</label>
-                                                                        <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= grupos[i].id ? grupos[i].id : '' %>">
+                                                                        <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= pagamentos[i].id ? pagamentos[i].id : '' %>">
                                                                     </div>                                        
-                                                                    <div class="form-group col-lg-10">
-                                                                        <label>Nome *:</label>
-                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= grupos[i].nome ? grupos[i].nome : '' %>" required="true" autofocus>
-                                                                    </div>                                                                
+                                                                    <div class="form-group col-lg-9">
+                                                                        <label>Nome:</label>
+                                                                        <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= pagamentos[i].nome ? pagamentos[i].nome : '' %>" autofocus>
+                                                                    </div>
+                                                                    <div class="form-group col-lg-12">
+                                                                        <label>Fórmula:</label>
+                                                                        <input type="text" class="form-control" name="formula" id="formula" placeholder="" value="<%= pagamentos[i].formula ? pagamentos[i].formula : '' %>">
+                                                                    </div>
+                                                                    <div class="checkbox">
+                                                                        <label>
+                                                                            <% if( pagamentos[i].financeiro == 'S' ) { %>
+                                                                            <input type="checkbox" name="financeiro" checked> Gerar Título ?
+                                                                            <% } else { %>
+                                                                            <input type="checkbox" name="financeiro">Gerar Título ?
+                                                                            <% } %>
+                                                                        </label>
+                                                                    </div>                                                               
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/grupo'">Cancelar</button>
+                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/pagamento'">Cancelar</button>
                                                             <button type="submit" class="btn btn-primary">Salvar</button>
                                                         </div>
                                                         
@@ -140,7 +166,7 @@
                                         <!-- /.modal -->
 
                                         <!-- Excluir Registro -->
-                                        <div class="modal modal-danger fade" id="modal-remove-<%= grupos[i].id %>">
+                                        <div class="modal modal-danger fade" id="modal-remove-<%= pagamentos[i].id %>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -153,10 +179,10 @@
                                                         <p>Deseja deletar o registro?</p>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/grupo">
+                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/pagamento">
                                                             Cancelar
                                                         </a>
-                                                        <a class="btn btn-outline" href="/grupoExcluir/<%=  grupos[i].id   %>">
+                                                        <a class="btn btn-outline" href="/pagamentoExcluir/<%=  pagamentos[i].id   %>">
                                                             Excluir
                                                         </a>
                                                     </div>

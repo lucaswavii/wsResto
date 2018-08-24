@@ -162,14 +162,14 @@ module.exports.login = function( application, req, res ){
 
     var connection = application.config.dbConnection();
     var usuarioDao = new application.app.models.UsuarioDAO(connection);       
-    console.log(dadosForms)
+   
     usuarioDao.login(dadosForms, function(error, result){
-        console.log(error)
+      
         if(result && result.length > 0 ) {
 			req.session.usuario = result[0];
             req.session.permissao = {};
             connection.end();					
-            res.render('index', { validacoes: {}, sessao: req.session.usuario });
+            res.redirect("/index")
             return;
         } else {
             connection.end();					
