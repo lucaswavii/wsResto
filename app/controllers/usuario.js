@@ -151,4 +151,31 @@ module.exports.salvar = function( application, req, res ){
 
 module.exports.login = function( application, req, res ){
 
+    var crypto = require('crypto');
+
+    var dadosForms = req.body;
+
+    if( dadosForms.senha ) {
+        var senha_criptografada = crypto.createHash("md5").update(dadosForms.senha).digest("hex");
+        dadosForms.senha = senha_criptografada;
+    }
+
+    var connection = application.config.dbConnection();
+    var usuarioDao = new application.app.models.UsuarioDAO(connection);       
+    console.log(dadosForms)
+    usuarioDao.login(dadosForms, function(error, result){
+        console.log(error)
+        if(result && result.length > 0 ) {
+			req.session.usuario = result[0];
+            req.session.permissao = {};
+            connection.end();					
+            res.render('index', { validacoes: {}, sessao: req.session.usuario });
+            return;
+        } else {
+            connection.end();					
+            res.render('login', { validacoes: [{'msg':'Usuário ou Senha inválido!'}], sessao: req.session.usuario });
+            return;
+        }			
+    });
+    
 };

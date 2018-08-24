@@ -4,7 +4,7 @@ module.exports = function(application){
         res.render('login');
     });
 
-    application.get('/acessar', function(req, res){		
+    application.post('/acessar', function(req, res){		
         application.app.controllers.usuario.login(application, req, res);
     });
 

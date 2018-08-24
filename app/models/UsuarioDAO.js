@@ -2,6 +2,18 @@ function UsuarioDAO( connection ){
 	this._connection = connection; 
 }
 
+UsuarioDAO.prototype.login = function( usuario, callback) {
+	
+	var sql = 	' SELECT usuario.id, usuario.nome, grupo.id as gpid, grupo.nome as gpnome, funcionario.id as fcid, funcionario.nome as fcnome, empresa.id as emid, empresa.nome as emnome ' 
+	sql += 		' FROM USUARIO usuario '
+	sql += 		' inner join GRUPO grupo on ( grupo.id = usuario.grupo ) '
+	sql += 		' inner join FUNCIONARIO funcionario on ( funcionario.id = usuario.funcionario ) '
+	sql += 		' inner join EMPRESA empresa on ( empresa.id = usuario.empresa )'
+	sql += 		' where usuario.nome = ? and usuario.senha = ? '
+	
+	this._connection.query(sql, usuario, callback);	
+}
+
 UsuarioDAO.prototype.listar = function( callback) {
 	this._connection.query('select * from USUARIO order by id', callback);	
 }
