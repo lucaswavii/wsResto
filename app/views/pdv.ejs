@@ -32,6 +32,7 @@
         <div class="content-wrapper">
             <!-- escrever conteúdo do sistema -->
             <section class="content-header">
+                
                 <div class="col-md-9">
                     <div class="box box-widget widget-user-2">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -62,19 +63,15 @@
                         <% } %>
                         <div class="box-footer no-padding">
                             <section class="content">
-                                <table class="table table-striped">
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>Condição</th>
-                                        <th>Data</th>
-                                        <th>Caixa</th>
-                                        <th>Mesa</th>
-                                        <th style="width: 40px">Valor</th>
-                                        <th style="width: 40px">Total</th>
-                                        <th style="width: 40px">Resta</th>
-                                    </tr>
-                                </table>
-                                
+                                <% for(var i = 0; i < validacao.length; i++) {%>
+                                    <div class="alert alert-danger alert-dismissable">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        <a href="#" class="alert-link">Ops!</a><%= validacao[i].msg %>
+                                    </div>
+                                <% } %>
+                                <% if( validacao.length > 0 ) { %>
+                                    <h1>CAIXA FECHADO</h1>
+                                <% } %>
                             </section>
                             
                         </div>
@@ -106,24 +103,34 @@
                             <section class="content">
                                 <div class="box-footer no-padding">
                                     <ul class="nav nav-stacked">
-                                        <% if( pdvs.length > 0 ) { %>
+                                            
+                                        <% if( validacao.length > 0 ) { %>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
-                                        <% } else { %>
-                                            <li><a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-gray">F6</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
+                                        <% } else { %>
+                                            <% if( pdvs.length > 0 ) { %>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
+                                            <% } else { %>
+                                                <li><a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-gray">F6</span></a></li>
+                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
+                                            <% } %>
                                         <% } %>
-                                       
                                     </ul>
                                 </div>
                             </section>
@@ -170,7 +177,9 @@
                                             <div class="form-group col-lg-6" >
                                                 <label>Caixa</label>
                                                 <select class="form-control" required="true" name="caixa" readonly="true">
-                                                    <option value="<%= caixas.id %>"><%= caixas.nome %></option>                                                                        
+                                                    <% if( caixas ) { %>
+                                                    <option value="<%= caixas.id %>"><%= caixas.nome %></option>
+                                                    <% } %>                                                                        
                                                 </select>                                                
                                             </div>
 

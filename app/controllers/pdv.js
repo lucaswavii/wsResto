@@ -21,11 +21,13 @@ module.exports.index = function( application, req, res ){
     caixaDao.listar( function(error, caixas){
             //Pega o caixa pelo ip da maquina
         var caixa =  caixas.find((it) => { return it.ip === params.ip && it.empresa === params.empresa; });
-        var pdv = { empresa:params.empresa, caixa: caixa.id }
-        pdvDao.listar( pdv, function(error, pdvs){
+        if( !caixa ) {
             connection.end(); 
-            res.render('pdv', { validacao : {}, pdvs : pdvs, caixas:caixa, sessao: req.session.usuario  });
-        });
+            res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}], pdvs : {}, caixas:{}, sessao: req.session.usuario  });
+            return;
+        }
+            connection.end(); 
+            res.render('pdv', { validacao : {}, pdvs : {}, caixas:caixa, sessao: req.session.usuario  });
     });
 
 }
