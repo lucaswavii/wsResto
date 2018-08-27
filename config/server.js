@@ -26,6 +26,9 @@ var expressValidator = require('express-validator');
 /* importar o módulo do express-session */
 var expressSession = require('express-session');
 
+/* importar o módulo do flas */
+var flash        = require('req-flash');
+
 /* iniciar o objeto do express */
 var app = express();
 
@@ -61,6 +64,8 @@ app.use(expressSession({
 	saveUninitialized:false,
 	maxAge: expiryDate // 24 hours
 }));
+
+app.use(flash({ locals: 'flash' }));
 
 //app.use(function (req, res, next) {
 //	req.session.nowInMinutes = Math.floor(Date.now() / 60e3)

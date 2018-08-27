@@ -48,7 +48,7 @@ module.exports = function(application){
         application.app.controllers.pdv.index(application, req, res);
     });
 
-    application.get('/balcao/:id', function(req, res){		
+    application.get('/balcao/:_id', function(req, res){		
         application.app.controllers.balcao.index(application, req, res);
     });
 

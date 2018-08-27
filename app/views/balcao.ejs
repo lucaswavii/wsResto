@@ -10,95 +10,425 @@
     <div class="wrapper">
 
         <% include /templates/header %>
-            <!-- =============================================== -->
+        <% function leftPad(value, totalWidth, paddingChar) { %>
+        <%  var length = totalWidth - value.toString().length + 1; %>
+        <%    return Array(length).join(paddingChar || '0') + value; %>
+        <%  }; %>
+        <% var now = new Date() %>
+        <% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+        <% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+        <% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+        
+        <% function getFormattedDate(date) { %>
+        <%  var year = date.getFullYear(); %>
+        <%  var month = (1 + date.getMonth()).toString(); %>
+        <%  month = month.length > 1 ? month : '0' + month; %>
+        <%  var day = date.getDate().toString(); %>
+        <%  day = day.length > 1 ? day : '0' + day; %>
+        <%  return year + '-' + month + '-' + day; %>
+        <% } %>
+           
+        <div class="content-wrapper">
+            <!-- escrever conteúdo do sistema -->
+            <!-- Main content -->
 
-            <!-- Content Wrapper. Contains page content -->
-
-            <div class="content-wrapper">
-                <!-- escrever conteúdo do sistema -->
-                <!-- Main content -->
-                <section class="content">
-                    
-                        <div class="box">
-                            <div class="box-header with-border">
-                                <div class="col-md-8">
+            <section class="content">
+                
+                    <div class="box">
+                            
+                        <div class="box-header with-border">
                                 
-                                    <form role="form" action="#" method="post">
+                            <div class="col-md-8">
+                                <% if( movimentos.length > 0 ) { %>
+                                    <form role="form"action="/incluirItemPorEan/<%= pdv %>" method="post">
                                         <div class="input-group margin">
-                                            <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" placeholder="Digite ou Bipe o EAN do produto" autofocus>
+                                            <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" required="true" placeholder="Digite ou Bipe o EAN do produto" autofocus>
                                             <span class="input-group-btn">
                                                 <button type="submit" class="btn btn-info btn-flat"><i class="fa fa-fw fa-search"></i></button>
                                             </span>
                                         </div>
                                     </form>
-                                </div>    
-                            </div>
-                            <div class="box-body">
-                                <div class="col-md-8">
-                                    <table id="grdprodutos" class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr>                                    
-                                                <th>Ean</th>                                                    
-                                                <th>Nome</th>
-                                                <th>Estoque</th>
-                                                <th>Unitário</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% for( var i = 0; i < produtos.length; i++) { %>
-                                                <tr>
-                                                    
-                                                    <td><%= produtos[i].ean %></td>
-                                                    <td><%= produtos[i].nome %></td>
-                                                    <td><%= produtos[i].estoque %></td>
-                                                    <td><%= produtos[i].preco.toFixed(2) %></td>
-                                                    <td>
-                                                        <div class="tools">
-                                                            <a href="#"><i class="fa fa-edit"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer">
-                                Footer
-                            </div>
-                            <!-- /.box-footer-->
-                        </div>
-                        <!-- /.box -->
-                    
-                </section>
+                                <% } else { %>
+                                    <div class="input-group margin">
+                                        <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" placeholder="Aguardando Iniciar uma nova venda." disabled>
+                                        <span class="input-group-btn">
+                                            <button type="submit" class=" <%= movimentos.length > 0 ? 'btn btn-info btn-flat' : 'btn btn-info btn-flat disabled' %>"><i class="fa fa-fw fa-search"></i></button>
+                                        </span>
+                                    </div>
+                                
+                                <% } %>
 
-            </div>
+                                <% if (flash.errorMessage ) { %>                  
+                                    <p class="text-red"><b><%= flash.errorMessage%></b></p>
+                                <% } %>
+                               
+                            </div> 
+                            <div class="col-md-4">
+                                <div class="input-group margin">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Ações
+                                            <span class="fa fa-caret-down"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Pesquisar</a></li>
+                                            <li><a href="#">Novo Cliente</a></li>                                                    
+                                        </ul>
+                                    </div>
+                                    <!-- /btn-group -->
+                                    <select class="form-control" required="true" readonly="true" name="categoria">
+                                        <option value="">Aguardando Cliente</option>
+                                        <% if( clientes.length > 0 ) {%>
+                                            <% for(var i=0; i < clientes.length; i++) {%>
+                                                <option value="<%= clientes[i].id %> " <%= movimentos.length > 0 && movimentos[0].cliente == clientes[i].id ? 'selected' : clientes[i].consumidor == 'S' ? 'selected' : '' %>><%= clientes[i].nome %></option>
+                                            <% } %>
+                                        <% } %>                                        
+                                    </select>
+                                </div>
+                            </div>   
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-8">
+                                <table id="grddados" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>                                    
+                                            <th>Ean</th>                                                    
+                                            <th>Nome</th>
+                                            <th>Estoque</th>
+                                            <th>Unitário</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for( var i = 0; i < produtos.length; i++) { %>
+                                            <tr>
+                                                
+                                                <td><%= produtos[i].ean %></td>
+                                                <td><%= produtos[i].nome %></td>
+                                                <td><%= produtos[i].estoque %></td>
+                                                <td><%= produtos[i].preco.toFixed(2) %></td>
+                                                <td><img src="<%= produtos[i].pathImagem ? produtos[i].pathImagem : 'images/noImagem.png' %>" width='58' height='40' alt="<%= produtos[i].pathImagem %>"></td>
+                                                <td>
+                                                    <div class="tools">                                                         
+                                                        <a href="#"><i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <section class="content">
+                                                                       
+                                    <div class="box-header">
+                                        <div class="box box-widget widget-user-2">
+                                            
+                                            <div class="widget-user-header bg-yellow">
+                                                <div class="widget-user-image">
+                                                    <img class="img-circle" src="../images/opgarcom.png" alt="User Avatar">
+                                                </div>
+                                                <!-- /.widget-user-image -->
+                                                <h3 class="widget-user-username"><%= sessao.nome %></h3>
+                                                <h5 class="widget-user-desc">Cupom: <%= movimentos.length > 0 ? movimentos[0].id : '' %>  -  Data: <%= movimentos.length > 0 ? getFormattedDate( movimentos[0].data ) : '' %></h5>
+                                                
+                                            </div>
+                                                    
+                                        </div>
+                                        <table class="display" style="width:100%" id="grditens">
+                                            <thead>
+                                                <tr>                                                    
+                                                    <th style="width: 10px">#</th>
+                                                    <th>Produto</th>
+                                                    <th>Qde</th>
+                                                    <th>R$</th>
+                                                    <th>SubTotal</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% var subTotal = 0;%>
+                                                <% for(var i=0; i < itens.length; i++) { %>
+                                                    <tr>
+                                                        <td><%= i + 1 %>.</td>
+                                                        <td>
+                                                            <% if( itens[i].cancelamento ) { %>
+                                                                
+                                                                <% for(var e=0; e < produtos.length; e++) {%>
+                                                                    <% if( itens[i].produto== produtos[e].id ) { %>
+                                                                        <%= produtos[e].nome %>
+                                                                    <% } %>
+                                                                <% } %>
+                                                                
+                                                            <% } else { %>
+                                                                <% for(var e=0; e < produtos.length; e++) {%>
+                                                                    <% if( itens[i].produto== produtos[e].id ) { %>
+                                                                        <%= produtos[e].nome  %>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </td>
+                                                        <td><%= itens[i].quantidade %></td>
+                                                        <td><%= itens[i].unitario.toFixed(2) %></td>
+                                                        <td><%= itens[i].total.toFixed(2) %></td>
+                                                        <td>                                                            
+                                                            <div class="tools">
+                                                                <% if( !itens[i].cancelamento ) { %>
+                                                                    <a href="/cancelaItem/<%= itens[i].id %>"><i class="fa fa-trash-o"></i></a>
+                                                                <% } else { %>
+                                                                    <p class="text-red"><b>
+                                                                        Cancelado                                                                    
+                                                                    </p>
+                                                                <% } %>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                        <% subTotal += itens[i].total %>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table> 
+                                        <% var pago = 0 %>
+                                        <% if( pagar.length > 0 ) {%>
+                                            <b>Pagamentos Lançados</b> 
+                                            <table class="display" style="width:100%" id="grdparcelas">
+                                                <thead>                                                    
+                                                </thead>
+                                                <tbody>
+                                                    <% for( var i = 0; i < pagar.length; i++) { %>
+                                                        <% pago += pagar[i].valor %>
+                                                        <tr>
+                                                            <td><%= i + 1 %>.</td>
+                                                            <td>
+                                                                <% for(var e=0; e < pagamentos.length; e++) {%>
+                                                                    <% if( pagar[i].condpagamento== pagamentos[e].id ) { %>
+                                                                        <%= pagamentos[e].nome %>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            </td>
+                                                            <td><%= pagar[i].valor.toFixed(2) %></td>
+                                                            <td>                                                            
+                                                                <div class="tools">
+                                                                
+                                                                    <a href="/cancelarPagamentoVendas/<%= pagar[i].id %>"><i class="fa fa-trash-o"></i></a>
+                                                                                                                                    
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                    <tr>
+                                                        <td>Total:</td>
+                                                        <td></td>
+                                                        <td><%= pago.toFixed(2) %></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        <% } %>
+                                        <table class="table table-condensed">
+                                            <tr>                                                 
+                                                <th class="bg-gray disabled color-palette">Total de Itens:</th>
+                                                <th><%= itens.length > 0 ? itens.length : 0 %></th>   
+                                                <th class="bg-gray disabled color-palette">Total:</th>
+                                                <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>                                                  
+                                            </tr>
+                                            <tr>                                                 
+                                                <th class="bg-gray disabled color-palette">Desconto:</th>
+                                                <th>R$ 0.00</th>  
+                                                <th class="bg-gray disabled color-palette">Taxas:</th>
+                                                <th>R$ 0.00</th>                                                  
+                                            </tr>
+                                            <tr>                                                 
+                                                <th class="bg-gray disabled color-palette">Total a Pagar:</th>
+                                                <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>
+                                                <th class="bg-gray disabled color-palette">Troco:</th>
+                                                <th>R$ <%= pago > 0 && pago >= subTotal ? ( pago - subTotal).toFixed(2) : '0.00'%></th>
+                                            </tr>
+                                        </table>                                         
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <th><button type="button" class="<%= movimentos.length > 0 ? 'btn btn-block btn-warning btn-lg disabled' : 'btn btn-block btn-warning btn-lg' %>" data-toggle="modal"  data-original-title="Remove" data-target="#<%= itens.length > 0 ? '' : 'iniciarVendas' %>">Iniciar</button></th>
+                                                    <th><button type="button" class="btn btn-block btn-primary btn-lg">Imprimir</button></th>
+                                                    <th rowspan="2"><button type="button" class="<%=  itens.length > 0 && pago == 0 ? 'btn btn-block btn-success btn-lg' :  pago >= subTotal ? 'btn btn-block btn-success btn-lg disabled' :  'btn btn-block btn-success btn-lg' %>"  style="height:93px;width:100px;" data-toggle="modal" data-target="#<%= itens.length > 0 && pago == 0 ? 'pagarVendas' : pago >= subTotal ? '' : 'pagarVendas' %>">Pagar</button></th>
+                                                </tr>
+                                                <tr>
+                                                    <th><button type="button" class="<%= pagar.length > 0 ? 'btn btn-block btn-danger btn-lg disabled' : movimentos.length > 0  ? 'btn btn-block btn-danger btn-lg' : 'btn btn-block btn-danger btn-lg disabled' %>" data-toggle="modal" data-target="#<%= pagar.length > 0 ? '' : movimentos.length > 0 ? 'cancelarVendas' : ''  %>">Cancelar</button></th>
+                                                    <th><button type="button" class="<%= pagar.length > 0 && pago >= subTotal ? 'btn btn-block btn-info btn-lg' : 'btn btn-block btn-info btn-lg disabled'%>" data-toggle="modal" data-target="#">Finalizar</button></th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>                                                
+                                </section>
+                                                       
+                            </div>                            
+                        </div>
+                        <div class="modal fade" id="iniciarVendas">
+                            <div class="modal-dialog">
+                                <form role="form" action="/abreVendaBalcao/<%= pdv %>" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">Abertura de Venda</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Pdv:</label>
+                                                        <input type="text" class="form-control" name="pdv" id="pdv" placeholder="" value="<%= pdv %>" readonly="true">                                                               
+                                                    </div>
+                                                    <div class="form-group col-lg-6" >
+                                                        <label>Atendente:</label>
+                                                        <select class="form-control" required="true" name="atendente" readonly="true">
+                                                            <option value="<%= sessao.fcid %>"><%= sessao.fcnome %></option>
+                                                        </select>
+                                                    </div>
+                                                
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Data:</label>
+                                                        
+                                                        <input type="date" class="form-control" name="data" required="true" value="<%= getFormattedDate(now)  %>" readonly="true">
+                                                    </div>
+                
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Hora:</label>
+                                                        <input type="time" class="form-control" name="hora" value="<%= hora %>" required="true" readonly="true">
+                                                    </div>
+                                                    <div class="form-group col-lg-12" >
+                                                        <label>Cliente:</label>
+                                                        <select class="form-control select2" required="true" name="cliente" readonly="true" style="width: 100%;">
+                                                            <% if( clientes.length > 0 ) {%>
+                                                                <% for(var i=0; i < clientes.length; i++) {%>
+                                                                    <option value="<%= clientes[i].id %>"><%= clientes[i].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                        </div>                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <div class="modal modal-danger fade" id="cancelarVendas">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title">Cancelamento de Venda</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Tem certeza que deseja cancelar toda Venda?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
+                                            Cancelar
+                                        </a>
+                                        <a class="btn btn-outline" href="/cancelarVendas/<%=  pdv   %>">
+                                            Confirmar
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <div class="modal fade" id="pagarVendas">
+                            <div class="modal-dialog">
+                                <form role="form" action="/pagamentoVendas/<%= pdv %>" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">Efetuar Pagamento</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                
+                                                    <div class="form-group col-lg-12" >
+                                                        <label>Pagamento:</label>
+                                                        <select class="form-control" required="true" name="condicaoPagamento">
+                                                            <option value="">Selecione</option>
+                                                            <% if( pagamentos.length > 0 ) {%>
+                                                                <% for(var i=0; i < pagamentos.length; i++) {%>
+                                                                    <option value="<%= pagamentos[i].id %>"><%= pagamentos[i].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row">        
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Total Pagamento:</label>
+                                                        <input type="text" class="form-control" name="total" id="total" placeholder="" value="<%= subTotal.toFixed(2)  %>" readonly="true">                                                               
+                                                    </div>    
+                                                    
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Total Pago:</label>
+                                                        <input type="text" class="form-control" name="pago" id="pago" placeholder="" value="<%=  ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')  %>" onkeyup="formataValor(this,event);" autofocus>                                                               
+                                                    </div>   
+                                                                                                       
+                                                </div>
+                                            </div>                                        
+                                        </div>                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary"> Pagar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div> 
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                                
+                        </div>
+                        <!-- /.box-footer-->
+                    </div>
+                    <!-- /.box -->
+                
+            </section>
+
+        </div>
 
             <!-- /.content-wrapper -->
-            <% include /templates/footer %>
+        <% include /templates/footer %>
 
 
-                <div class="control-sidebar-bg"></div>
+        <div class="control-sidebar-bg"></div>
     </div>
 </body>
+
 <% include /templates/scripts %>
 <script>
     $(function () {
     
-        $('#grdprodutos').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : false,
-            'autoWidth'   : true,
-            "language": {
-                        "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
-                    }
+        $('#grditens').DataTable({
+        "scrollY":        "100px",
+        "scrollCollapse": true,
+        "paging":         false,
+        'ordering'    : false,
+        'autoWidth'   : false,
+        'searching'   : false,
+        'info'        : false,
+        "language": {
+            "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
+        }
         })
     })
 </script>
-      
 </html>

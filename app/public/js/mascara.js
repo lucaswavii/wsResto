@@ -1,3 +1,20 @@
+function formatBR(value, decimais) {
+
+    decimais = decimais || 2;
+    var mi = value.length - parseInt(decimais);
+    var sm = parseInt(mi / 3);
+    var regx = "", repl = "";
+
+    for (var i = 0; i < sm; i++) {
+        regx = regx.concat('([0-9]{3})');
+        repl = repl.concat('.$' + (i + 1));
+    }
+
+    regx = regx.concat('([0-9]{' + decimais + '})') + "$";
+    repl = repl.concat(',$' + (sm + 1));
+    value = value.toString().replace(new RegExp(regx, 'g'), repl);
+    return (mi % 3) === 0 ? value.substr(1) : value;
+}
 // JScript File
 function HabilitarSomenteNumeros(){
     if (window.event.keyCode >= 48 && window.event.keyCode <= 57)

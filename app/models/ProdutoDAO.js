@@ -6,6 +6,10 @@ ProdutoDAO.prototype.listar = function( callback) {
 	this._connection.query('select * from PRODUTO order by id', callback);	
 }
 
+ProdutoDAO.prototype.ean = function( ean, callback) {
+	this._connection.query('select * from PRODUTO where ean = ? order by id', ean, callback);	
+}
+
 ProdutoDAO.prototype.salvar = function( produto, callback) {	
 	if( !produto.id ) {
 		this._connection.query('insert into PRODUTO set ?', produto, callback);

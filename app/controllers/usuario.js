@@ -172,8 +172,9 @@ module.exports.login = function( application, req, res ){
             res.redirect("/index")
             return;
         } else {
-            connection.end();					
-            res.render('login', { validacoes: [{'msg':'Usuário ou Senha inválido!'}], sessao: req.session.usuario });
+            connection.end();	
+            req.flash('errorMessage', 'Usuário ou Senha inválido!')				
+            res.redirect("/login")
             return;
         }			
     });
