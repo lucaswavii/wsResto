@@ -19,10 +19,10 @@
     <%  month = month.length > 1 ? month : '0' + month; %>
     <%  var day = date.getDate().toString(); %>
     <%  day = day.length > 1 ? day : '0' + day; %>
-    <%  return year + '-' + month + '-' + day; %>
+    <%  return day + '/' + month + '/' + year %>
 <% } %>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
 
@@ -30,14 +30,14 @@
         
        
         <div class="content-wrapper">
+                
             <!-- escrever conteúdo do sistema -->
             <section class="content-header">
-                
-                <div class="col-md-9">
+            
+                <div class="col-md-8">
                     <div class="box box-widget widget-user-2">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <% console.log(pdvs) %>
-                        <% if( pdvs.length > 0 ) { %>
+                        <% if( pdvs && pdvs.id ) { %>
                         <div class="widget-user-header bg-green">
                             <div class="widget-user-image">
                                 <img class="img-circle" src="../images/vendas-pdv.png" alt="User Avatar">
@@ -63,28 +63,50 @@
                         <% } %>
                         <div class="box-footer no-padding">
                             <section class="content">
+                                <div class="col-md-12">
+                
+                                <% if( validacao.length > 0 ) { %>
+                                    <h1>CAIXA FECHADO</h1>
+                                    <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
+                                    <h5 class="widget-user-desc">Dirija-se ao próximo caixa.</h5>
+                            
+                                <% } else { %>
+                                
+                                    <% if( pdvs && pdvs.id ) { %>
+                        
+                                        <h1>CAIXA LIVRE</h1>
+                                        <h5 class="widget-user-desc">Seja Bem Vindo.</h5>
+                                        <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
+                            
+                                    <% } else { %>
+                        
+                                        <h1>CAIXA FECHADO</h1>
+                                        <h5 class="widget-user-desc">Dirija-se ao próximo caixa.</h5>
+                                        <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
+                            
+                                    <% } %>
+                                <% } %>
                                 <% for(var i = 0; i < validacao.length; i++) {%>
                                     <div class="alert alert-danger alert-dismissable">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                         <a href="#" class="alert-link">Ops!</a><%= validacao[i].msg %>
                                     </div>
                                 <% } %>
-                                <% if( validacao.length > 0 ) { %>
-                                    <h1>CAIXA FECHADO</h1>
-                                <% } %>
+                
+                                </div>
                             </section>
-                            
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <!-- Widget: user widget style 1 -->
                     <div class="box box-widget widget-user">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <% if( pdvs.length > 0 ) { %>
+                        <% if( pdvs && pdvs.id ) { %>
+                        
                         <div class="widget-user-header bg-aqua-active">
-                            <h3 class="widget-user-username">Alexander Pierce</h3>
-                            <h5 class="widget-user-desc">Founder &amp; CEO</h5>
+                            <h3 class="widget-user-username"><%= sessao.nome %></h3>
+                            <h5 class="widget-user-desc">Aberto em: <%= getFormattedDate(pdvs.data) %></h5>
                         </div>
                         <div class="widget-user-image">
                             <img class="img-circle" src="../images/opcaixa.png" alt="User Avatar">
@@ -113,14 +135,14 @@
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-gray">F6</span></a></li>
                                             <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
                                         <% } else { %>
-                                            <% if( pdvs.length > 0 ) { %>
+                                            <% if( pdvs && pdvs.id ) { %>
                                                 <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
+                                                <li><a href="#"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
+                                                <li><a href="#"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
+                                                <li><a href="/balcao/<%= pdvs.id %>"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                                <li><a href="#"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                                <li><a href="#"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
+                                                <li><a href="#"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
                                             <% } else { %>
                                                 <li><a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
                                                 <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
@@ -138,10 +160,7 @@
                         </div>
                     </div>
                     <!-- /.widget-user -->
-                </div>
-            </section>
-            <!-- Main content -->
-            <section class="content">
+                </div>                    
                 <div class="modal fade" id="modal-default">
                     <div class="modal-dialog">
                         <form role="form" action="/aberturaCaixa" method="post">
@@ -212,11 +231,18 @@
                         <!-- /.modal-content -->
                     </div>
                 <!-- /.modal-dialog -->
-                </div>
-
-               
+                </div>     
+                
+                
+                
             </section>
+            <!-- Main content -->
+            <section class="content">
+                                 
+            </section>
+
         </div>
+
         <!-- /.content-wrapper -->
         <% include /templates/footer %>
         <div class="control-sidebar-bg"></div>

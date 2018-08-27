@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include /templates/head %>
+</head>
+
+<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <% include /templates/header %>
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+
+            <div class="content-wrapper">
+                <!-- escrever conteúdo do sistema -->
+                <!-- Main content -->
+                <section class="content">
+                    
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <div class="col-md-8">
+                                
+                                    <form role="form" action="#" method="post">
+                                        <div class="input-group margin">
+                                            <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" placeholder="Digite ou Bipe o EAN do produto" autofocus>
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-info btn-flat"><i class="fa fa-fw fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>    
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-8">
+                                    <table id="grdprodutos" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>                                    
+                                                <th>Ean</th>                                                    
+                                                <th>Nome</th>
+                                                <th>Estoque</th>
+                                                <th>Unitário</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for( var i = 0; i < produtos.length; i++) { %>
+                                                <tr>
+                                                    
+                                                    <td><%= produtos[i].ean %></td>
+                                                    <td><%= produtos[i].nome %></td>
+                                                    <td><%= produtos[i].estoque %></td>
+                                                    <td><%= produtos[i].preco.toFixed(2) %></td>
+                                                    <td>
+                                                        <div class="tools">
+                                                            <a href="#"><i class="fa fa-edit"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                Footer
+                            </div>
+                            <!-- /.box-footer-->
+                        </div>
+                        <!-- /.box -->
+                    
+                </section>
+
+            </div>
+
+            <!-- /.content-wrapper -->
+            <% include /templates/footer %>
+
+
+                <div class="control-sidebar-bg"></div>
+    </div>
+</body>
+<% include /templates/scripts %>
+<script>
+    $(function () {
+    
+        $('#grdprodutos').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : false,
+            'autoWidth'   : true,
+            "language": {
+                        "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
+                    }
+        })
+    })
+</script>
+      
+</html>

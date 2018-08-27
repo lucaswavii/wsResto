@@ -1,3 +1,5 @@
+# Não manda conexão
+dbConnection.js
 # Logs
 logs
 *.log

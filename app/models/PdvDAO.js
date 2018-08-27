@@ -2,8 +2,8 @@ function PdvDAO( connection ){
 	this._connection = connection; 
 }
 
-PdvDAO.prototype.listar = function( pdvs, callback) {
-	this._connection.query('select * from PDV where fim is null and empresa = ? caixa = ? order by id', [ pdvs.empresa, pdvs.caixa], callback);	
+PdvDAO.prototype.listar = function(callback) {
+	this._connection.query('select * from PDV where fim is null', callback);	
 }
 
 PdvDAO.prototype.salvar = function( pdv, callback) {	

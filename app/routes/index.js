@@ -43,8 +43,13 @@ module.exports = function(application){
     application.get('/caixa', function(req, res){		
         application.app.controllers.caixa.index(application, req, res);
     });
+
     application.get('/pdv', function(req, res){		
         application.app.controllers.pdv.index(application, req, res);
+    });
+
+    application.get('/balcao/:id', function(req, res){		
+        application.app.controllers.balcao.index(application, req, res);
     });
 
     application.get('/usuario', function(req, res){		
