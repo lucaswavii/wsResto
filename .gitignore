@@ -1,5 +1,5 @@
 # Não manda conexão
-dbConnection.js
+config/dbConnection.js
 # Logs
 logs
 *.log
