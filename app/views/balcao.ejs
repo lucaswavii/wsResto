@@ -412,23 +412,23 @@
         <div class="control-sidebar-bg"></div>
     </div>
 </body>
-
-<% include /templates/scripts %>
 <script>
-    $(function () {
-    
-        $('#grditens').DataTable({
-        "scrollY":        "100px",
-        "scrollCollapse": true,
-        "paging":         false,
-        'ordering'    : false,
-        'autoWidth'   : false,
-        'searching'   : false,
-        'info'        : false,
-        "language": {
-            "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
-        }
+        $(function () {
+        
+            $('#grditens').DataTable({
+            "scrollY":        "100px",
+            "scrollCollapse": true,
+            "paging":         false,
+            'ordering'    : false,
+            'autoWidth'   : false,
+            'searching'   : false,
+            'info'        : false,
+            "language": {
+                "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
+            }
+            })
         })
-    })
-</script>
+    </script>
+<% include /templates/scripts %>
+
 </html>
