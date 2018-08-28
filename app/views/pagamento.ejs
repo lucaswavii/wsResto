@@ -60,15 +60,18 @@
                                                         <label>Nome*:</label>
                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" autofocus >
                                                     </div>  
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-6">
                                                         <label>Formula*:</label>
                                                         <input type="text" class="form-control" name="formula" id="formula" placeholder="" value="" autocomplete="off" required="true" MaxLength="45" >
                                                     </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox" name="financeiro"> Gerar Título ?
-                                                        </label>
-                                                    </div>                                                
+                                                    <div class="form-group col-lg-6" >
+                                                        <label>Baixa Disponível ?</label>
+                                                        <select class="form-control" required="true" name="financeiro">
+                                                            <option value="S">Sim</option>
+                                                            <option value="N">Não</option>
+                                                        </select>
+                                                    </div> 
+                                                                                
                                                 </div>
                                             </div>                                        
                                         </div>
@@ -91,7 +94,7 @@
                                     <tr>
                                         <th>Nome</th>
                                         <th>Formula</th>
-                                        <th>Financeiro</th>
+                                        <th>Baixa Disponível?</th>
                                         <th>
                                             <div class="tools">
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -135,19 +138,18 @@
                                                                         <label>Nome:</label>
                                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= pagamentos[i].nome ? pagamentos[i].nome : '' %>" autofocus>
                                                                     </div>
-                                                                    <div class="form-group col-lg-12">
+                                                                    <div class="form-group col-lg-6">
                                                                         <label>Fórmula:</label>
                                                                         <input type="text" class="form-control" name="formula" id="formula" placeholder="" value="<%= pagamentos[i].formula ? pagamentos[i].formula : '' %>">
                                                                     </div>
-                                                                    <div class="checkbox">
-                                                                        <label>
-                                                                            <% if( pagamentos[i].financeiro == 'S' ) { %>
-                                                                            <input type="checkbox" name="financeiro" checked> Gerar Título ?
-                                                                            <% } else { %>
-                                                                            <input type="checkbox" name="financeiro">Gerar Título ?
-                                                                            <% } %>
-                                                                        </label>
-                                                                    </div>                                                               
+                                                                    <div class="form-group col-lg-6" >
+                                                                        <label>Baixa Disponível ?</label>
+                                                                        <select class="form-control" required="true" name="financeiro">
+                                                                            <option value="S" <%= pagamentos[i].financeiro == 'S' ? 'selected' :'' %>>Sim</option>
+                                                                            <option value="N" <%= pagamentos[i].financeiro == 'N' ? 'selected' :'' %>>Não</option>
+                                                                        </select>
+                                                                    </div> 
+                                                                                                                            
                                                                 </div>
                                                             </div>
                                                         </div>

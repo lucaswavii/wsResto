@@ -110,7 +110,7 @@ module.exports.salvar = function( application, req, res ){
     
     var connection = application.config.dbConnection();
     var pagamentoDao = new application.app.models.PagamentoDAO(connection);       
-    
+    console.log(dadosForms)
     pagamentoDao.salvar(dadosForms, function(error, result){        
         
         if( error ) {

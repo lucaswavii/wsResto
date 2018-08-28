@@ -129,8 +129,11 @@
                                                 </div>
                                                 <!-- /.widget-user-image -->
                                                 <h3 class="widget-user-username"><%= sessao.nome %></h3>
+                                                <% if( movimentos.length > 0 ) { %>
                                                 <h5 class="widget-user-desc">Cupom: <%= movimentos.length > 0 ? movimentos[0].id : '' %>  -  Data: <%= movimentos.length > 0 ? getFormattedDate( movimentos[0].data ) : '' %></h5>
-                                                
+                                                <% } else { %>
+                                                    <h5 class="widget-user-desc">Aguardando nova venda.</h5>
+                                                <% } %>
                                             </div>
                                                     
                                         </div>
@@ -187,7 +190,7 @@
                                                 <% } %>
                                             </tbody>
                                         </table> 
-                                        <% var pago = 0 %>
+                                        <% var pago = 0; var troco = 0; %>
                                         <% if( pagar.length > 0 ) {%>
                                             <b>Pagamentos Lançados</b> 
                                             <table class="display" style="width:100%" id="grdparcelas">
@@ -195,7 +198,8 @@
                                                 </thead>
                                                 <tbody>
                                                     <% for( var i = 0; i < pagar.length; i++) { %>
-                                                        <% pago += pagar[i].valor %>
+                                                        <% pago  += pagar[i].pago %>
+                                                        <% troco += pagar[i].troco > 0 ? pagar[i].troco : 0 %>
                                                         <tr>
                                                             <td><%= i + 1 %>.</td>
                                                             <td>
@@ -206,6 +210,8 @@
                                                                 <% } %>
                                                             </td>
                                                             <td><%= pagar[i].valor.toFixed(2) %></td>
+                                                            <td><%= pagar[i].pago.toFixed(2) %></td>
+                                                            <td><%= pagar[i].troco > 0 ? pagar[i].troco .toFixed(2) : '0.00' %></td>
                                                             <td>                                                            
                                                                 <div class="tools">
                                                                 
@@ -218,7 +224,11 @@
                                                     <tr>
                                                         <td>Total:</td>
                                                         <td></td>
+                                                        <td></td>
                                                         <td><%= pago.toFixed(2) %></td>
+                                                        <td><%= troco.toFixed(2) %></td>
+                                                        
+                                                        
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -252,7 +262,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th><button type="button" class="<%= pagar.length > 0 ? 'btn btn-block btn-danger btn-lg disabled' : movimentos.length > 0  ? 'btn btn-block btn-danger btn-lg' : 'btn btn-block btn-danger btn-lg disabled' %>" data-toggle="modal" data-target="#<%= pagar.length > 0 ? '' : movimentos.length > 0 ? 'cancelarVendas' : ''  %>">Cancelar</button></th>
-                                                    <th><button type="button" class="<%= pagar.length > 0 && pago >= subTotal ? 'btn btn-block btn-info btn-lg' : 'btn btn-block btn-info btn-lg disabled'%>" data-toggle="modal" data-target="#">Finalizar</button></th>
+                                                    <th><button type="button" class="<%= pagar.length > 0 && pago >= subTotal ? 'btn btn-block btn-info btn-lg' : 'btn btn-block btn-info btn-lg disabled'%>" data-toggle="modal" data-target="#<%= pagar.length > 0 && pago >= subTotal ? 'finalicarVendas' : ''%>">Finalizar</button></th>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -372,7 +382,7 @@
                                                 <div class="row">        
                                                     <div class="form-group col-lg-6">
                                                         <label>Total Pagamento:</label>
-                                                        <input type="text" class="form-control" name="total" id="total" placeholder="" value="<%= subTotal.toFixed(2)  %>" readonly="true">                                                               
+                                                        <input type="text" class="form-control" name="total" id="total" placeholder="" value="<%= ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')   %>" readonly="true">                                                               
                                                     </div>    
                                                     
                                                     <div class="form-group col-lg-6">
@@ -393,6 +403,31 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div> 
+                        <div class="modal modal-danger fade" id="finalicarVendas">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title">Finalizar Venda</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Tem certeza que deseja finalizar toda Venda?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
+                                            Cancelar
+                                        </a>
+                                        <a class="btn btn-outline" href="/finalizarVendas/<%=  pdv   %>">
+                                            Confirmar
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
                         <!-- /.box-body -->
                         <div class="box-footer">
                                 

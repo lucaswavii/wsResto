@@ -56,7 +56,7 @@
                                             <div class="container-fluid">
                                                 <div class="row">
                                                     
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-6">
                                                         <label>Nome*:</label>
                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" required="true" MaxLength="200" autofocus >
                                                     </div> 
@@ -71,6 +71,17 @@
                                                             <% if( empresas.length > 0 ) {%>
                                                                 <% for(var e=0; e < empresas.length; e++) {%>
                                                                     <option value="<%= empresas[e].id %>"><%= empresas[e].nome %></option>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>   
+                                                    <div class="form-group col-lg-6" >
+                                                        <label>Disponível:</label>
+                                                        <select class="form-control" required="true" name="disponivel">
+                                                            
+                                                            <% if( disponiveis.length > 0 ) {%>
+                                                                <% for(var e=0; e < disponiveis.length; e++) {%>
+                                                                    <option value="<%= disponiveis[e].id %>"><%= disponiveis[e].nome %></option>
                                                                 <% } %>
                                                             <% } %>
                                                         </select>
@@ -111,10 +122,12 @@
                                     <% for( var i = 0; i < caixas.length; i++) {%>
                                     <tr>
                                         <% var empresa = empresas.filter(function(value){ return value.id == caixas[i].empresa;})  %> 
+                                        <% var disponivel = disponiveis.filter(function(value){ return value.id == caixas[i].disponivel;})  %> 
                                         
                                         <td><%= caixas[i].nome %></td>
                                         <td><%= caixas[i].ip %></td>
                                         <td><%= empresa[0].nome %></td>
+                                        <td><%= disponivel[0].nome %></td>
                                         <td>
                                             <div class="tools">
                                                 <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= caixas[i].id %>"><i class="fa fa-edit"></i></a>
@@ -134,15 +147,15 @@
                                                         <div class="modal-body">
                                                             <div class="container-fluid">
                                                                 <div class="row">
-                                                                    <div class="form-group col-lg-12">
+                                                                    <div class="form-group col-lg-2">
                                                                         <label>Id:</label>
                                                                         <input type="text" class="form-control" name="id" id="id" placeholder="" value="<%= caixas[i].id ? caixas[i].id : '' %>" autocomplete="off" required="true" MaxLength="200" readonly="true" >
                                                                     </div>
-                                                                    <div class="form-group col-lg-12">
+                                                                    <div class="form-group col-lg-5">
                                                                         <label>Nome*:</label>
                                                                         <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= caixas[i].nome ? caixas[i].nome : '' %>" autocomplete="off" required="true" MaxLength="200" autofocus >
                                                                     </div> 
-                                                                    <div class="form-group col-lg-6">
+                                                                    <div class="form-group col-lg-5">
                                                                         <label>Ip*:</label>
                                                                         <input type="text" class="form-control" name="ip" id="ip" placeholder="" value="<%= caixas[i].ip ? caixas[i].ip : '' %>" autocomplete="off" required="true" MaxLength="30" >
                                                                     </div>
@@ -156,7 +169,18 @@
                                                                                 <% } %>
                                                                             <% } %>
                                                                         </select>
-                                                                    </div>   
+                                                                    </div>  
+                                                                    <div class="form-group col-lg-6" >
+                                                                        <label>Disponível:</label>
+                                                                        <select class="form-control" required="true" name="disponivel">
+                                                                            
+                                                                            <% if( disponiveis.length > 0 ) {%>
+                                                                                <% for(var e=0; e < disponiveis.length; e++) {%>
+                                                                                    <option value="<%= disponiveis[e].id %>" <%= caixas[i].disponivel == disponiveis[e].id ? 'selected' : '' %>><%= disponiveis[e].nome %></option>
+                                                                                <% } %>
+                                                                            <% } %>
+                                                                        </select>
+                                                                    </div>    
                                                                                                  
                                                                 </div>
                                                             </div>

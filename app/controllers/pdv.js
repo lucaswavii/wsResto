@@ -32,9 +32,7 @@ module.exports.index = function( application, req, res ){
         pdvDao.listar(function(error, pdvs){
             
             var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id && it.empresa === caixa.empresa; });
-            
-            console.log(frenteDeLojaAberto)
-            
+                                  
             if( frenteDeLojaAberto ) {
                
                 funcionarios.listar( function(error, funcionarios){
@@ -94,13 +92,13 @@ module.exports.abre = function( application, req, res ){
             if( !frenteDeLojaAberto ) {
 
                 pdvDao.salvar( dadosForms, function(error, pdvs){
-    
+                    console.log(error)
                     connection.end(); 
                     res.redirect('/pdv')
                 });
             } else {
                 connection.end(); 
-                res.render('pdv', { validacao : {}, pdvs : frenteDeLojaAberto, caixas:caixa, sessao: req.session.usuario  });
+                res.render('pdv', { validacao : [{'msg':'Problemas ao tentar abrir o pdv.'}], pdvs : frenteDeLojaAberto, caixas:caixa, sessao: req.session.usuario  });
             }
         });
     });

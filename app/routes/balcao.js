@@ -19,6 +19,8 @@ module.exports = function(application){
     application.get('/cancelarPagamentoVendas/:_id', function(req, res){
         application.app.controllers.balcao.cancelarPagamentoVendas(application, req, res);
     });
-    
-    
+
+    application.get('/finalizarVendas/:_id', function(req, res){
+        application.app.controllers.balcao.finalizarVendas(application, req, res);
+    });
 }

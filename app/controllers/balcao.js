@@ -171,20 +171,35 @@ module.exports.pagamentoVendas = function( application, req, res ){
     var connection = application.config.dbConnection();           
     var pagarDao = new application.app.models.PagarDAO(connection); 
     var movimentoDao = new application.app.models.MovimentoDAO(connection); 
-
+    var pdvDao = new application.app.models.PdvDAO(connection); 
+    var caixaDao = new application.app.models.CaixaDAO(connection);         
     
     movimentoDao.listaVendaBalcao( idPdv, function(error, movimentos){
-    
-        var pagamento = {
-                            movimento:movimentos[0].id,
-                            condpagamento:dadosForms.condicaoPagamento, 
-                            valor: dadosForms.pago.replace('.', '').replace(',', '.') 
-                        };
-                        console.log(pagamento)
-        pagarDao.salvar(pagamento, function(error, result){
+
+        pdvDao.listar(function(error, pdvs){
             
-            connection.end();  
-            res.redirect('/balcao/' + idPdv);
+            var frenteDeLojaAberto =  pdvs.find((it) => { return it.id === movimentos[0].pdv; });
+            
+            caixaDao.editar(frenteDeLojaAberto.caixa, function(error, caixas ){
+        
+                var total = dadosForms.total.replace('.', '').replace(',', '.');
+                var pago = dadosForms.pago.replace('.', '').replace(',', '.');
+
+                var pagamento = {
+                                    movimento:movimentos[0].id,
+                                    condpagamento:dadosForms.condicaoPagamento,
+                                    disponivel: caixas[0].disponivel, 
+                                    valor: total, 
+                                    pago:pago, 
+                                    troco: pago - total                         
+                                };
+                                
+                pagarDao.salvar(pagamento, function(error, result){
+                    
+                    connection.end();  
+                    res.redirect('/balcao/' + idPdv);
+                });
+            })
         });
     });
 }
@@ -209,4 +224,149 @@ module.exports.cancelarPagamentoVendas = function( application, req, res ){
             });
         });
     });
+}
+
+module.exports.finalizarVendas = function( application, req, res ){
+    var idPdv = req.params._id;
+    var date 		= require('datejs');
+
+    function leftPad(value, totalWidth, paddingChar) { 
+        var length = totalWidth - value.toString().length + 1; 
+        return Array(length).join(paddingChar || '0') + value; 
+    };
+
+    var connection = application.config.dbConnection();           
+    var pagarDao = new application.app.models.PagarDAO(connection); 
+    var movimentoDao = new application.app.models.MovimentoDAO(connection); 
+    var pagamentoDao = new application.app.models.PagamentoDAO(connection);
+    var financeiroDao = new application.app.models.FinanceiroDAO(connection);
+    var movdispoDao = new application.app.models.MovdispoDAO(connection); 
+
+    movimentoDao.listaVendaBalcao( idPdv, function(error, movimentos){
+        
+        var hoje = new Date(); 
+        movimentos[0].fim  = hoje;
+        movimentos[0].fimh  = leftPad(hoje.getHours(),2) + ":" + leftPad(hoje.getMinutes(),2);  
+        
+        var arrDisponiveis = [];
+        
+        pagarDao.listar(movimentos[0].id, function(error, pagar){
+
+            for (let index = 0; index < pagar.length; index++) {
+                                    
+                const element = pagar[index];
+
+                pagamentoDao.editar(element.condpagamento, function(error, condicaoPagamento){
+                
+                    if( !element.recebimento ) {
+                    
+                        var parcelas = condicaoPagamento[0].formula.toUpperCase().split('/');                        
+                    
+                        if( parcelas.length  > 1 ) {
+                            
+                            for(var i=0; i < parcelas.length; i++) {
+                                    
+                                var separacao = parcelas[i].split('DD');
+                                var dias      = separacao[0];
+                                var percentual= separacao[1].replace('%','');
+
+                                if( percentual.indexOf(',') >=0 ) {
+                                    percentual = percentual.replace(',', '.')
+                                }
+                                var valor = element.valor > element.pago ? element.pago : element.valor;
+                                var lancamento = { 
+                                                    data: new Date(), 
+                                                    cliente: movimentos[0].cliente, 
+                                                    pagamento: element.id,
+                                                    disponivel: element.disponivel, 
+                                                    vencimento: Date.today().addDays(dias),
+                                                    correcao: Date.today().addDays(dias),
+                                                    valor : ( valor*percentual)/100,
+                                                    pago:condicaoPagamento[0].financeiro  }
+
+                                financeiroDao.salvar(lancamento, function(error, result){                                
+                                    
+                                    element.recebimento = new Date();
+                                    
+                                    if( condicaoPagamento[0].financeiro == 'S') {
+                                        
+                                        var params= { 
+                                                        data: lancamento.correcao, 
+                                                        disponivel: lancamento.disponivel, 
+                                                        financeiro: result.insertId,
+                                                        valor : lancamento.valor
+                                                    }
+                                                    console.log(params)
+                                        movdispoDao.salvar(params, function(error, result){
+                                            console.log(error)
+                                        }); 
+                                        pagarDao.salvar(element, function(error, result){}); 
+                                    }  else {
+                                        pagarDao.salvar(element, function(error, result){});
+                                    }                                   
+                                        
+                                });
+                                
+                            }
+
+                        } else {
+
+                            var separacao = parcelas[0].split('DD');
+                            var dias      = separacao[0];
+                            var percentual= separacao[1].replace('%','');
+                            
+                            var valor = element.valor > element.pago ? element.pago : element.valor;
+                                
+                                
+                            if( percentual.indexOf(',') >=0 ) {
+                                percentual = percentual.replace(',', '.')
+                            }
+
+                            var lancamento = { 
+                                                data: new Date(), 
+                                                cliente: movimentos[0].cliente, 
+                                                pagamento: element.id, 
+                                                vencimento: Date.today().addDays(dias),
+                                                correcao: Date.today().addDays(dias),
+                                                disponivel: element.disponivel,
+                                                valor : ( valor*percentual )/100, 
+                                                pago:condicaoPagamento[0].financeiro 
+                                            }
+                            
+                            financeiroDao.salvar(lancamento, function(error, result){
+                                console.log(result)
+                                element.recebimento = new Date();
+
+                                if( condicaoPagamento[0].financeiro == 'S') {
+                                    
+                                    var params =    { 
+                                                        data: lancamento.correcao, 
+                                                        disponivel: lancamento.disponivel, 
+                                                        financeiro: result.insertId,
+                                                        valor : lancamento.valor
+                                                    }
+                                                    console.log(params)
+                                    movdispoDao.salvar(params, function(error, result){
+                                        console.log(error)
+                                    });
+                                    pagarDao.salvar(element, function(error, result){});                                                                            
+                                }  else {
+                                    pagarDao.salvar(element, function(error, result){});
+                                }
+                            });
+                        }                            
+                    }   
+                });
+            }
+
+            console.log(arrDisponiveis)
+            // Finaliza Venda finalizando o movimento
+            movimentoDao.salvar(movimentos[0], function(error, pagar){
+                connection.end();  
+                res.redirect('/balcao/' + idPdv );
+            })
+        });
+       
+    });
+    
 }
