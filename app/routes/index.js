@@ -52,6 +52,10 @@ module.exports = function(application){
         application.app.controllers.balcao.index(application, req, res);
     });
 
+    application.get('/salao/:_id', function(req, res){		
+        application.app.controllers.salao.index(application, req, res);
+    });
+
     application.get('/usuario', function(req, res){		
         application.app.controllers.usuario.index(application, req, res);
     });

@@ -27,6 +27,18 @@
 <script src="../../plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <script type="text/javascript" src="../js/mascara.js "></script>
 <!-- page script -->
+<!-- iCheck -->
+<script src="../../plugins/iCheck/icheck.min.js"></script>
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' /* optional */
+    });
+  });
+</script>
+
 <script>
   $(function () {
   
@@ -43,6 +55,7 @@
     })
   })
 </script>
+
 <script>
   $(document).ready(function () {
     $('.sidebar-menu').tree()
@@ -369,14 +382,3 @@
       });
     })  
   </script>
-  <!-- iCheck -->
-<script src="../../plugins/iCheck/icheck.min.js"></script>
-<script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' /* optional */
-    });
-  });
-</script>

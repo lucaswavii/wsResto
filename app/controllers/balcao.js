@@ -30,7 +30,7 @@ module.exports.index = function( application, req, res ){
 
                     movimentoDao.listaVendaBalcao( idPdv, function(error, movimentos){
                         
-                        if( movimentos.length > 0 ) {
+                        if( movimentos && movimentos.length > 0 ) {
 
                             itemDao.listar(movimentos[0].id, function(error, itens){
                                 
@@ -60,6 +60,11 @@ module.exports.abreVendaBalcao = function( application, req, res ){
     var idPdv = req.params._id;
     var dadosForms = req.body;
  
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+
     var connection = application.config.dbConnection();
     var movimentoDao = new application.app.models.MovimentoDAO(connection);
 
@@ -77,6 +82,11 @@ module.exports.incluirItemPorEan = function( application, req, res ){
     var idPdv = req.params._id;
     var dadosForms = req.body;
  
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+
     var connection = application.config.dbConnection();    
     var produtoDao = new application.app.models.ProdutoDAO(connection);
     var itemDao = new application.app.models.ItemDAO(connection);
@@ -115,6 +125,11 @@ module.exports.incluirItemPorEan = function( application, req, res ){
 
 module.exports.cancelarVendas = function( application, req, res ){
     var idPdv = req.params._id;
+
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
 
     var connection = application.config.dbConnection();
     var movimentoDao = new application.app.models.MovimentoDAO(connection);        
@@ -168,6 +183,11 @@ module.exports.pagamentoVendas = function( application, req, res ){
     var idPdv = req.params._id;
     var dadosForms = req.body;
 
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+
     var connection = application.config.dbConnection();           
     var pagarDao = new application.app.models.PagarDAO(connection); 
     var movimentoDao = new application.app.models.MovimentoDAO(connection); 
@@ -209,6 +229,10 @@ module.exports.cancelarPagamentoVendas = function( application, req, res ){
     
     var id = req.params._id;
    
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
     var connection = application.config.dbConnection();           
     var pagarDao = new application.app.models.PagarDAO(connection); 
     var movimentoDao = new application.app.models.MovimentoDAO(connection); 
@@ -235,20 +259,22 @@ module.exports.finalizarVendas = function( application, req, res ){
         return Array(length).join(paddingChar || '0') + value; 
     };
 
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+
     var connection = application.config.dbConnection();           
     var pagarDao = new application.app.models.PagarDAO(connection); 
     var movimentoDao = new application.app.models.MovimentoDAO(connection); 
     var pagamentoDao = new application.app.models.PagamentoDAO(connection);
     var financeiroDao = new application.app.models.FinanceiroDAO(connection);
-    var movdispoDao = new application.app.models.MovdispoDAO(connection); 
-
+   
     movimentoDao.listaVendaBalcao( idPdv, function(error, movimentos){
         
         var hoje = new Date(); 
         movimentos[0].fim  = hoje;
-        movimentos[0].fimh  = leftPad(hoje.getHours(),2) + ":" + leftPad(hoje.getMinutes(),2);  
-        
-        var arrDisponiveis = [];
+        movimentos[0].fimh  = leftPad(hoje.getHours(),2) + ":" + leftPad(hoje.getMinutes(),2); 
         
         pagarDao.listar(movimentos[0].id, function(error, pagar){
 
@@ -259,7 +285,9 @@ module.exports.finalizarVendas = function( application, req, res ){
                 pagamentoDao.editar(element.condpagamento, function(error, condicaoPagamento){
                 
                     if( !element.recebimento ) {
-                    
+                        
+                        element.recebimento = new Date();
+
                         var parcelas = condicaoPagamento[0].formula.toUpperCase().split('/');                        
                     
                         if( parcelas.length  > 1 ) {
@@ -282,32 +310,14 @@ module.exports.finalizarVendas = function( application, req, res ){
                                                     vencimento: Date.today().addDays(dias),
                                                     correcao: Date.today().addDays(dias),
                                                     valor : ( valor*percentual)/100,
-                                                    pago:condicaoPagamento[0].financeiro  }
+                                                    pago:'N'  }
 
-                                financeiroDao.salvar(lancamento, function(error, result){                                
-                                    
-                                    element.recebimento = new Date();
-                                    
-                                    if( condicaoPagamento[0].financeiro == 'S') {
-                                        
-                                        var params= { 
-                                                        data: lancamento.correcao, 
-                                                        disponivel: lancamento.disponivel, 
-                                                        financeiro: result.insertId,
-                                                        valor : lancamento.valor
-                                                    }
-                                                    console.log(params)
-                                        movdispoDao.salvar(params, function(error, result){
-                                            console.log(error)
-                                        }); 
-                                        pagarDao.salvar(element, function(error, result){}); 
-                                    }  else {
-                                        pagarDao.salvar(element, function(error, result){});
-                                    }                                   
-                                        
-                                });
                                 
-                            }
+                                financeiroDao.salvar(lancamento, function(error, result){});
+                                element.recebimento = new Date();
+                                pagarDao.salvar(element, function(error, result){});
+                                
+                            }                          
 
                         } else {
 
@@ -330,36 +340,17 @@ module.exports.finalizarVendas = function( application, req, res ){
                                                 correcao: Date.today().addDays(dias),
                                                 disponivel: element.disponivel,
                                                 valor : ( valor*percentual )/100, 
-                                                pago:condicaoPagamento[0].financeiro 
+                                                pago:'N' 
                                             }
                             
-                            financeiroDao.salvar(lancamento, function(error, result){
-                                console.log(result)
-                                element.recebimento = new Date();
-
-                                if( condicaoPagamento[0].financeiro == 'S') {
-                                    
-                                    var params =    { 
-                                                        data: lancamento.correcao, 
-                                                        disponivel: lancamento.disponivel, 
-                                                        financeiro: result.insertId,
-                                                        valor : lancamento.valor
-                                                    }
-                                                    console.log(params)
-                                    movdispoDao.salvar(params, function(error, result){
-                                        console.log(error)
-                                    });
-                                    pagarDao.salvar(element, function(error, result){});                                                                            
-                                }  else {
-                                    pagarDao.salvar(element, function(error, result){});
-                                }
-                            });
+                            financeiroDao.salvar(lancamento, function(error, result){});
+                            
+                            element.recebimento = new Date();
+                            pagarDao.salvar(element, function(error, result){}); 
                         }                            
                     }   
                 });
             }
-
-            console.log(arrDisponiveis)
             // Finaliza Venda finalizando o movimento
             movimentoDao.salvar(movimentos[0], function(error, pagar){
                 connection.end();  

@@ -59,8 +59,52 @@
                             <h5 class="widget-user-desc">Caixa Fechado</h5>
                             
                         </div>
+
                         
                         <% } %>
+                        <div class="box-footer">
+                            <section class="content">
+                                <div class="box-footer no-padding">
+                                     <!-- /.box -->
+                                    <div class="box">
+                                        <div class="col-md-12">    
+                                            <div class="box-header">
+                                                <h3 class="box-title">Total de Vendas</h3>
+                                            </div>
+                                                <!-- /.box-header -->
+                                            <div class="box-body no-padding">
+                                                <table class="table table-condensed">
+                                                    <tr>
+                                                        <th style="width: 10px">#</th>
+                                                        <th>Tipo Pagamento</th>
+                                                        <th>Valor</th>
+                                                        
+                                                    </tr>
+                                                    <% var totalFechamento = 0;%>
+                                                    <% for(var i = 0; i < resumoPagamento.length; i++) {%>
+                                                        <tr>
+                                                            <td><%= i + 1 %>.</td>
+                                                            <td><%= resumoPagamento[i].condicao %></td>
+                                                            <td><%= resumoPagamento[i].total.toFixed(2) %></td>
+                                                            <% totalFechamento += resumoPagamento[i].total %>
+                                                        </tr>
+                                                    <% } %>
+                                                    <tr>
+                                                        <td><h1>TOTAL:</h1></td>
+                                                        <td></td>
+                                                        <td><h1><%= totalFechamento.toFixed(2) %></h1></td>
+                                                        
+                                                    </tr>
+                                                                                                          
+                                                </table>
+                                            </div>
+                                        </div>
+                                                                        
+                                    </div>                                        
+                                </div>
+                            </section>
+                        </div> 
+                        <!-- 
                         <div class="box-footer no-padding">
                             <section class="content">
                                 <div class="col-md-12">
@@ -94,9 +138,11 @@
                                 <% } %>
                 
                                 </div>
+                                
                             </section>
-                        </div>
+                        </div> -->
                     </div>
+                    
                 </div>
                 <div class="col-md-4">
                     <!-- Widget: user widget style 1 -->
@@ -111,6 +157,7 @@
                         <div class="widget-user-image">
                             <img class="img-circle" src="../images/opcaixa.png" alt="User Avatar">
                         </div>
+                        
                         <% } else { %>
                         <div class="widget-user-header bg-red-active">
                             <h3 class="widget-user-username"></h3>
@@ -142,7 +189,7 @@
                                                 <li><a href="/balcao/<%= pdvs.id %>"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
                                                 <li><a href="#"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
                                                 <li><a href="#"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
-                                                <li><a href="#"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
+                                                <li><a href="#" data-toggle="modal" data-target="#modal-default-fechamento"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
                                             <% } else { %>
                                                 <li><a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
                                                 <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
@@ -160,7 +207,8 @@
                         </div>
                     </div>
                     <!-- /.widget-user -->
-                </div>                    
+                </div>     
+
                 <div class="modal fade" id="modal-default">
                     <div class="modal-dialog">
                         <form role="form" action="/aberturaCaixa" method="post">
@@ -231,13 +279,76 @@
                         <!-- /.modal-content -->
                     </div>
                 <!-- /.modal-dialog -->
-                </div>     
-                
-                
-                
+                </div>
+
+                <div class="modal fade" id="modal-default-fechamento">
+                    <div class="modal-dialog">
+                        <form role="form" action="/fechamentoCaixa" method="post">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Fechamento do caixa - <%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            
+                                            <div class="form-group col-lg-6">
+                                                <label>Fim:</label>
+                                                
+                                                <input type="text" class="form-control" name="fim" required="true" value="<%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %>" readonly="true">
+                                            </div>
+
+                                            <div class="form-group col-lg-6">
+                                                <label>Hora:</label>
+                                                <input type="time" class="form-control" name="fimh" value="<%= hora %>" required="true" readonly="true">
+                                            </div>
+                                            <!-- /.box -->
+
+                                            <div class="form-group col-lg-12">
+                                                Resumo de Vendas:
+                                                <table class="table table-condensed">
+                                                    <tr>
+                                                        
+                                                    </tr>
+                                                    <% var totalFechamento = 0;%>
+                                                    <% for(var i = 0; i < resumoPagamento.length; i++) {%>
+                                                        <tr>
+                                                            <td><%= i + 1 %>.</td>
+                                                            <td><%= resumoPagamento[i].condicao %></td>
+                                                            <td><%= resumoPagamento[i].total.toFixed(2) %></td>
+                                                            <% totalFechamento += resumoPagamento[i].total %>
+                                                        </tr>
+                                                    <% } %>
+                                                    <tr>
+                                                        <td>Total:</td>
+                                                        <td></td>
+                                                        <td><%= totalFechamento.toFixed(2) %></td>
+                                                        
+                                                    </tr>
+                                                
+                                                </table>
+                                            </div>                                            
+                                        </div>
+                                    </div>                                        
+                                </div>                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/pdv'">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Finalizar Caixa</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- /.modal-content -->
+                    </div>
+                <!-- /.modal-dialog -->
+                </div>
+
             </section>
             <!-- Main content -->
             <section class="content">
+                
                                  
             </section>
 

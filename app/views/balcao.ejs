@@ -5,73 +5,88 @@
     <% include /templates/head %>
 </head>
 
+<% function leftPad(value, totalWidth, paddingChar) { %>
+<%  var length = totalWidth - value.toString().length + 1; %>
+<%    return Array(length).join(paddingChar || '0') + value; %>
+<%  }; %>
+<% var now = new Date() %>
+<% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+<% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+<% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+
+<% function getFormattedDate(date) { %>
+<%  var year = date.getFullYear(); %>
+<%  var month = (1 + date.getMonth()).toString(); %>
+<%  month = month.length > 1 ? month : '0' + month; %>
+<%  var day = date.getDate().toString(); %>
+<%  day = day.length > 1 ? day : '0' + day; %>
+<%  return year + '-' + month + '-' + day; %>
+<% } %>
+
 <body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
 
         <% include /templates/header %>
-        <% function leftPad(value, totalWidth, paddingChar) { %>
-        <%  var length = totalWidth - value.toString().length + 1; %>
-        <%    return Array(length).join(paddingChar || '0') + value; %>
-        <%  }; %>
-        <% var now = new Date() %>
-        <% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
-        <% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
-        <% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+        <!-- =============================================== -->
+
+        <!-- Content Wrapper. Contains page content -->
         
-        <% function getFormattedDate(date) { %>
-        <%  var year = date.getFullYear(); %>
-        <%  var month = (1 + date.getMonth()).toString(); %>
-        <%  month = month.length > 1 ? month : '0' + month; %>
-        <%  var day = date.getDate().toString(); %>
-        <%  day = day.length > 1 ? day : '0' + day; %>
-        <%  return year + '-' + month + '-' + day; %>
-        <% } %>
-           
         <div class="content-wrapper">
             <!-- escrever conteúdo do sistema -->
-            <!-- Main content -->
-
             <section class="content">
-                
-                    <div class="box">
-                            
-                        <div class="box-header with-border">
-                                
-                            <div class="col-md-8">
-                                <% if( movimentos.length > 0 ) { %>
-                                    <form role="form"action="/incluirItemPorEan/<%= pdv %>" method="post">
-                                        <div class="input-group margin">
-                                            <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" required="true" placeholder="Digite ou Bipe o EAN do produto" autofocus>
-                                            <span class="input-group-btn">
-                                                <button type="submit" class="btn btn-info btn-flat"><i class="fa fa-fw fa-search"></i></button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                <% } else { %>
-                                    <div class="input-group margin">
-                                        <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" placeholder="Aguardando Iniciar uma nova venda." disabled>
-                                        <span class="input-group-btn">
-                                            <button type="submit" class=" <%= movimentos.length > 0 ? 'btn btn-info btn-flat' : 'btn btn-info btn-flat disabled' %>"><i class="fa fa-fw fa-search"></i></button>
-                                        </span>
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <div class="user-block">
+                            <img class="img-circle" src="../images/opgarcom.png" alt="User Image">
+                            <span class="username"><a href="#"><%=  movimentos.length > 0 ? 'Número Cupom: ' + movimentos[0].id : 'Aguardando Iniciar Venda de Balcão'%></a></span>
+                            <span class="description">Operador de Caixa: <%= sessao.nome %></span>
+                        </div>
+                    
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-8">
+                            <% if( movimentos.length > 0 ) { %>
+                            <form role="form"action="/incluirItemPorEan/<%= pdv %>" method="post">                                       
+                                <div class="input-group margin"> 
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-danger">ok</button>
                                     </div>
-                                
-                                <% } %>
+                                   
+                                    <!-- /btn-group -->
+                                    <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" required="true" placeholder="Digite ou Bipe o EAN do produto" autofocus>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#buscarProdutoPesquisa"><i class="fa fa-fw fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </form>
+                            
+                            <% } else { %>
+                                <div class="input-group margin"> 
+                                    <div class="input-group-btn">
+                                        <button type="button" class="<%= movimentos.length > 0 ? 'btn btn-danger' : 'btn btn-danger disabled' %>">ok</button>
+                                    </div>
+                                    
+                                    <!-- /btn-group -->
+                                    <input type="text" class="form-control" id="ean" name="ean" autocomplete="off" required="true" placeholder="Digite ou Bipe o EAN do produto" autofocus disabled>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#buscarProdutoPesquisa"><i class="fa fa-fw fa-search"></i></button>
+                                    </span>
+                                </div>
 
-                                <% if (flash.errorMessage ) { %>                  
-                                    <p class="text-red"><b><%= flash.errorMessage%></b></p>
-                                <% } %>
-                               
-                            </div> 
-                            <div class="col-md-4">
+                                                  
+                            <% } %>
+                            </div>
+                            <div class="col-xs-4">
                                 <div class="input-group margin">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Ações
                                             <span class="fa fa-caret-down"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="#">Pesquisar</a></li>
-                                            <li><a href="#">Novo Cliente</a></li>                                                    
+                                            <li><a href="#"  data-toggle="modal" data-target="#buscarClientePesquisa" >Pesquisar</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#novoClienteVenda" >Novo Cliente</a></li>                                                    
                                         </ul>
                                     </div>
                                     <!-- /btn-group -->
@@ -84,60 +99,18 @@
                                         <% } %>                                        
                                     </select>
                                 </div>
-                            </div>   
-                        </div>
-                        <div class="box-body">
-                            <div class="col-md-8">
-                                <table id="grddados" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>                                    
-                                            <th>Ean</th>                                                    
-                                            <th>Nome</th>
-                                            <th>Estoque</th>
-                                            <th>Unitário</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% for( var i = 0; i < produtos.length; i++) { %>
-                                            <tr>
-                                                
-                                                <td><%= produtos[i].ean %></td>
-                                                <td><%= produtos[i].nome %></td>
-                                                <td><%= produtos[i].estoque %></td>
-                                                <td><%= produtos[i].preco.toFixed(2) %></td>
-                                                <td><img src="<%= produtos[i].pathImagem ? produtos[i].pathImagem : 'images/noImagem.png' %>" width='58' height='40' alt="<%= produtos[i].pathImagem %>"></td>
-                                                <td>
-                                                    <div class="tools">                                                         
-                                                        <a href="#"><i class="fa fa-plus"></i></a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
                             </div>
-                            <div class="col-md-4">
-                                <section class="content">
-                                                                       
-                                    <div class="box-header">
-                                        <div class="box box-widget widget-user-2">
-                                            
-                                            <div class="widget-user-header bg-yellow">
-                                                <div class="widget-user-image">
-                                                    <img class="img-circle" src="../images/opgarcom.png" alt="User Avatar">
-                                                </div>
-                                                <!-- /.widget-user-image -->
-                                                <h3 class="widget-user-username"><%= sessao.nome %></h3>
-                                                <% if( movimentos.length > 0 ) { %>
-                                                <h5 class="widget-user-desc">Cupom: <%= movimentos.length > 0 ? movimentos[0].id : '' %>  -  Data: <%= movimentos.length > 0 ? getFormattedDate( movimentos[0].data ) : '' %></h5>
-                                                <% } else { %>
-                                                    <h5 class="widget-user-desc">Aguardando nova venda.</h5>
-                                                <% } %>
-                                            </div>
-                                                    
-                                        </div>
-                                        <table class="display" style="width:100%" id="grditens">
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div class="box box-danger">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Itens Vendidos</h3>
+                                    </div>
+                                    <div class="box-body">  
+                                        
+                                        <table id="griditens" class="table table-striped table-bordered nowrap" style="width:100%">                                      
+                                      
                                             <thead>
                                                 <tr>                                                    
                                                     <th style="width: 10px">#</th>
@@ -154,21 +127,27 @@
                                                     <tr>
                                                         <td><%= i + 1 %>.</td>
                                                         <td>
-                                                            <% if( itens[i].cancelamento ) { %>
-                                                                
-                                                                <% for(var e=0; e < produtos.length; e++) {%>
-                                                                    <% if( itens[i].produto== produtos[e].id ) { %>
-                                                                        <%= produtos[e].nome %>
-                                                                    <% } %>
-                                                                <% } %>
-                                                                
-                                                            <% } else { %>
-                                                                <% for(var e=0; e < produtos.length; e++) {%>
-                                                                    <% if( itens[i].produto== produtos[e].id ) { %>
-                                                                        <%= produtos[e].nome  %>
-                                                                    <% } %>
+                                                            
+                                                            <% for(var e=0; e < produtos.length; e++) {%>
+                                                                <% if( itens[i].produto== produtos[e].id ) { %>
+                                                                    <ul class="products-list product-list-in-box">
+                                                                        <li class="item">
+                                                                            <div class="product-img">
+                                                                                <img src="<%= produtos[e].pathImagem ? produtos[e].pathImagem : 'images/noImagem.png' %>" width='30' height='20' alt="Product Image">
+                                                                            </div>
+                                                                            <div class="product-info">
+                                                                                <a href="javascript:void(0)" class="product-title"><%= produtos[e].nome %>
+                                                                                    
+                                                                                <span class="<%= !itens[i].cancelamento ? 'label label-success pull-right' : 'label label-danger pull-right' %>"><%= !itens[i].cancelamento ? 'Ativo' : 'Cancelado' %></span></a>
+                                                                                <span class="product-description">
+                                                                                    Estoque: <%= produtos[e].estoque %>
+                                                                                </span>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
                                                                 <% } %>
                                                             <% } %>
+                                                           
                                                         </td>
                                                         <td><%= itens[i].quantidade %></td>
                                                         <td><%= itens[i].unitario.toFixed(2) %></td>
@@ -189,13 +168,26 @@
                                                     </tr>
                                                 <% } %>
                                             </tbody>
-                                        </table> 
-                                        <% var pago = 0; var troco = 0; %>
-                                        <% if( pagar.length > 0 ) {%>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="box box-danger">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Menu Balcão</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
                                             <b>Pagamentos Lançados</b> 
-                                            <table class="display" style="width:100%" id="grdparcelas">
+                                            <table id="gridparcelas" class="table table-striped table-bordered nowrap" style="width:100%">                                      
+                                      
                                                 <thead>                                                    
                                                 </thead>
+                                            <% var pago = 0; var troco = 0; %>
+                                            <% if( pagar.length > 0 ) {%>
+                                                
                                                 <tbody>
                                                     <% for( var i = 0; i < pagar.length; i++) { %>
                                                         <% pago  += pagar[i].pago %>
@@ -227,243 +219,434 @@
                                                         <td></td>
                                                         <td><%= pago.toFixed(2) %></td>
                                                         <td><%= troco.toFixed(2) %></td>
-                                                        
-                                                        
                                                     </tr>
                                                 </tbody>
-                                            </table>
-                                        <% } %>
-                                        <table class="table table-condensed">
-                                            <tr>                                                 
-                                                <th class="bg-gray disabled color-palette">Total de Itens:</th>
-                                                <th><%= itens.length > 0 ? itens.length : 0 %></th>   
-                                                <th class="bg-gray disabled color-palette">Total:</th>
-                                                <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>                                                  
-                                            </tr>
-                                            <tr>                                                 
-                                                <th class="bg-gray disabled color-palette">Desconto:</th>
-                                                <th>R$ 0.00</th>  
-                                                <th class="bg-gray disabled color-palette">Taxas:</th>
-                                                <th>R$ 0.00</th>                                                  
-                                            </tr>
-                                            <tr>                                                 
-                                                <th class="bg-gray disabled color-palette">Total a Pagar:</th>
-                                                <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>
-                                                <th class="bg-gray disabled color-palette">Troco:</th>
-                                                <th>R$ <%= pago > 0 && pago >= subTotal ? ( pago - subTotal).toFixed(2) : '0.00'%></th>
-                                            </tr>
-                                        </table>                                         
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <th><button type="button" class="<%= movimentos.length > 0 ? 'btn btn-block btn-warning btn-lg disabled' : 'btn btn-block btn-warning btn-lg' %>" data-toggle="modal"  data-original-title="Remove" data-target="#<%= itens.length > 0 ? '' : 'iniciarVendas' %>">Iniciar</button></th>
-                                                    <th><button type="button" class="btn btn-block btn-primary btn-lg">Imprimir</button></th>
-                                                    <th rowspan="2"><button type="button" class="<%=  itens.length > 0 && pago == 0 ? 'btn btn-block btn-success btn-lg' :  pago >= subTotal ? 'btn btn-block btn-success btn-lg disabled' :  'btn btn-block btn-success btn-lg' %>"  style="height:93px;width:100px;" data-toggle="modal" data-target="#<%= itens.length > 0 && pago == 0 ? 'pagarVendas' : pago >= subTotal ? '' : 'pagarVendas' %>">Pagar</button></th>
+                                            </table>   
+                                                                                                                                                
+                                            <% } %>
+                                            <table class="table table-condensed">
+                                                <tr>                                                 
+                                                    <th class="bg-gray disabled color-palette">Total de Itens:</th>
+                                                    <th><%= itens.length > 0 ? itens.length : 0 %></th>   
+                                                    <th class="bg-gray disabled color-palette">Total:</th>
+                                                    <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>                                                  
                                                 </tr>
-                                                <tr>
-                                                    <th><button type="button" class="<%= pagar.length > 0 ? 'btn btn-block btn-danger btn-lg disabled' : movimentos.length > 0  ? 'btn btn-block btn-danger btn-lg' : 'btn btn-block btn-danger btn-lg disabled' %>" data-toggle="modal" data-target="#<%= pagar.length > 0 ? '' : movimentos.length > 0 ? 'cancelarVendas' : ''  %>">Cancelar</button></th>
-                                                    <th><button type="button" class="<%= pagar.length > 0 && pago >= subTotal ? 'btn btn-block btn-info btn-lg' : 'btn btn-block btn-info btn-lg disabled'%>" data-toggle="modal" data-target="#<%= pagar.length > 0 && pago >= subTotal ? 'finalicarVendas' : ''%>">Finalizar</button></th>
+                                                <tr>                                                 
+                                                    <th class="bg-gray disabled color-palette">Desconto:</th>
+                                                    <th>R$ 0.00</th>  
+                                                    <th class="bg-gray disabled color-palette">Taxas:</th>
+                                                    <th>R$ 0.00</th>                                                  
                                                 </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>                                                
-                                </section>
-                                                       
-                            </div>                            
-                        </div>
-                        <div class="modal fade" id="iniciarVendas">
-                            <div class="modal-dialog">
-                                <form role="form" action="/abreVendaBalcao/<%= pdv %>" method="post">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h4 class="modal-title">Abertura de Venda</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="container-fluid">
-                                                <div class="row">
-                                                    <div class="form-group col-lg-6">
-                                                        <label>Pdv:</label>
-                                                        <input type="text" class="form-control" name="pdv" id="pdv" placeholder="" value="<%= pdv %>" readonly="true">                                                               
-                                                    </div>
-                                                    <div class="form-group col-lg-6" >
-                                                        <label>Atendente:</label>
-                                                        <select class="form-control" required="true" name="atendente" readonly="true">
-                                                            <option value="<%= sessao.fcid %>"><%= sessao.fcnome %></option>
-                                                        </select>
-                                                    </div>
-                                                
-                                                    <div class="form-group col-lg-6">
-                                                        <label>Data:</label>
-                                                        
-                                                        <input type="date" class="form-control" name="data" required="true" value="<%= getFormattedDate(now)  %>" readonly="true">
-                                                    </div>
-                
-                                                    <div class="form-group col-lg-6">
-                                                        <label>Hora:</label>
-                                                        <input type="time" class="form-control" name="hora" value="<%= hora %>" required="true" readonly="true">
-                                                    </div>
-                                                    <div class="form-group col-lg-12" >
-                                                        <label>Cliente:</label>
-                                                        <select class="form-control select2" required="true" name="cliente" readonly="true" style="width: 100%;">
-                                                            <% if( clientes.length > 0 ) {%>
-                                                                <% for(var i=0; i < clientes.length; i++) {%>
-                                                                    <option value="<%= clientes[i].id %>"><%= clientes[i].nome %></option>
-                                                                <% } %>
-                                                            <% } %>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>                                        
-                                        </div>                                        
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
-                                            <button type="submit" class="btn btn-primary">Salvar</button>
-                                        </div>
-                                    </div>
-                                </form>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                        <div class="modal modal-danger fade" id="cancelarVendas">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        <h4 class="modal-title">Cancelamento de Venda</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Tem certeza que deseja cancelar toda Venda?</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
-                                            Cancelar
-                                        </a>
-                                        <a class="btn btn-outline" href="/cancelarVendas/<%=  pdv   %>">
-                                            Confirmar
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                        <div class="modal fade" id="pagarVendas">
-                            <div class="modal-dialog">
-                                <form role="form" action="/pagamentoVendas/<%= pdv %>" method="post">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h4 class="modal-title">Efetuar Pagamento</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="container-fluid">
-                                                <div class="row">
-                
-                                                    <div class="form-group col-lg-12" >
-                                                        <label>Pagamento:</label>
-                                                        <select class="form-control" required="true" name="condicaoPagamento">
-                                                            <option value="">Selecione</option>
-                                                            <% if( pagamentos.length > 0 ) {%>
-                                                                <% for(var i=0; i < pagamentos.length; i++) {%>
-                                                                    <option value="<%= pagamentos[i].id %>"><%= pagamentos[i].nome %></option>
-                                                                <% } %>
-                                                            <% } %>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row">        
-                                                    <div class="form-group col-lg-6">
-                                                        <label>Total Pagamento:</label>
-                                                        <input type="text" class="form-control" name="total" id="total" placeholder="" value="<%= ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')   %>" readonly="true">                                                               
-                                                    </div>    
+                                                <tr>                                                 
+                                                    <th class="bg-gray disabled color-palette">Total a Pagar:</th>
+                                                    <th>R$ <%= subTotal > 0 ? subTotal.toFixed(2) : '0.00'%></th>
+                                                    <th class="bg-gray disabled color-palette">Troco:</th>
+                                                    <th>R$ <%= pago > 0 && pago >= subTotal ? ( pago - subTotal).toFixed(2) : '0.00'%></th>
+                                                </tr>
+                                            </table>                                         
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <th><button type="button" class="<%= movimentos.length > 0 ? 'btn btn-block btn-warning btn-lg disabled' : 'btn btn-block btn-warning btn-lg' %>" data-toggle="modal"  data-original-title="Remove" data-target="#<%= itens.length > 0 ? '' : 'iniciarVendas' %>">Iniciar</button></th>
+                                                        <th><button type="button" class="btn btn-block btn-primary btn-lg">Imprimir</button></th>
+                                                        <th rowspan="2"><button type="button" class="<%=  itens.length > 0 && pago == 0 ? 'btn btn-block btn-success btn-lg' :  pago >= subTotal ? 'btn btn-block btn-success btn-lg disabled' :  'btn btn-block btn-success btn-lg' %>"  style="height:93px;width:100px;" data-toggle="modal" data-target="#<%= itens.length > 0 && pago == 0 ? 'pagarVendas' : pago >= subTotal ? '' : 'pagarVendas' %>">Pagar</button></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><button type="button" class="<%= pagar.length > 0 ? 'btn btn-block btn-danger btn-lg disabled' : movimentos.length > 0  ? 'btn btn-block btn-danger btn-lg' : 'btn btn-block btn-danger btn-lg disabled' %>" data-toggle="modal" data-target="#<%= pagar.length > 0 ? '' : movimentos.length > 0 ? 'cancelarVendas' : ''  %>">Cancelar</button></th>
+                                                        <th><button type="button" class="<%= pagar.length > 0 && pago >= subTotal ? 'btn btn-block btn-info btn-lg' : 'btn btn-block btn-info btn-lg disabled'%>" data-toggle="modal" data-target="#<%= pagar.length > 0 && pago >= subTotal ? 'finalicarVendas' : ''%>">Finalizar</button></th>
+                                                    </tr>
                                                     
-                                                    <div class="form-group col-lg-6">
-                                                        <label>Total Pago:</label>
-                                                        <input type="text" class="form-control" name="pago" id="pago" placeholder="" value="<%=  ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')  %>" onkeyup="formataValor(this,event);" autofocus>                                                               
-                                                    </div>   
-                                                                                                       
-                                                </div>
-                                            </div>                                        
-                                        </div>                        
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
-                                            <button type="submit" class="btn btn-primary"> Pagar</button>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                </form>
-                                <!-- /.modal-content -->
+                                </div>
                             </div>
-                            <!-- /.modal-dialog -->
-                        </div> 
-                        <div class="modal modal-danger fade" id="finalicarVendas">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        <h4 class="modal-title">Finalizar Venda</h4>
+                        </div>                        
+                    </div>                    
+                    <!-- /.box-body -->
+                </div>
+                
+            </section>   
+                
+        </div>
+        
+        <div class="modal fade" id="iniciarVendas">
+            <div class="modal-dialog">
+                <form role="form" action="/abreVendaBalcao/<%= pdv %>" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Abertura de Venda</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="form-group col-lg-6">
+                                        <label>Pdv:</label>
+                                        <input type="text" class="form-control" name="pdv" id="pdv" placeholder="" value="<%= pdv %>" readonly="true">                                                               
                                     </div>
-                                    <div class="modal-body">
-                                        <p>Tem certeza que deseja finalizar toda Venda?</p>
+                                    <div class="form-group col-lg-6" >
+                                        <label>Atendente:</label>
+                                        <select class="form-control" required="true" name="atendente" readonly="true">
+                                            <option value="<%= sessao.fcid %>"><%= sessao.fcnome %></option>
+                                        </select>
                                     </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
-                                            Cancelar
-                                        </a>
-                                        <a class="btn btn-outline" href="/finalizarVendas/<%=  pdv   %>">
-                                            Confirmar
-                                        </a>
+                                
+                                    <div class="form-group col-lg-6">
+                                        <label>Data:</label>
+                                        
+                                        <input type="date" class="form-control" name="data" required="true" value="<%= getFormattedDate(now)  %>" readonly="true">
+                                    </div>
+
+                                    <div class="form-group col-lg-6">
+                                        <label>Hora:</label>
+                                        <input type="time" class="form-control" name="hora" value="<%= hora %>" required="true" readonly="true">
+                                    </div>
+                                    <div class="form-group col-lg-12" >
+                                        <label>Cliente:</label>
+                                        <select class="form-control select2" required="true" name="cliente" readonly="true" style="width: 100%;">
+                                            <% if( clientes.length > 0 ) {%>
+                                                <% for(var i=0; i < clientes.length; i++) {%>
+                                                    <option value="<%= clientes[i].id %>"><%= clientes[i].nome %></option>
+                                                <% } %>
+                                            <% } %>
+                                        </select>
                                     </div>
                                 </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
+                            </div>                                        
+                        </div>                                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
-                        <!-- /.box-body -->
-                        <div class="box-footer">
-                                
-                        </div>
-                        <!-- /.box-footer-->
                     </div>
-                    <!-- /.box -->
-                
-            </section>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        
+        <div class="modal modal-danger fade" id="cancelarVendas">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Cancelamento de Venda</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja cancelar toda Venda?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
+                            Cancelar
+                        </a>
+                        <a class="btn btn-outline" href="/cancelarVendas/<%=  pdv   %>">
+                            Confirmar
+                        </a>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        
+        <div class="modal fade" id="pagarVendas">
+            <div class="modal-dialog">
+                <form role="form" action="/pagamentoVendas/<%= pdv %>" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Efetuar Pagamento</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
 
+                                    <div class="form-group col-lg-12" >
+                                        <label>Pagamento:</label>
+                                        <select class="form-control" required="true" name="condicaoPagamento">
+                                            <option value="">Selecione</option>
+                                            <% if( pagamentos.length > 0 ) {%>
+                                                <% for(var i=0; i < pagamentos.length; i++) {%>
+                                                    <option value="<%= pagamentos[i].id %>"><%= pagamentos[i].nome %></option>
+                                                <% } %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">        
+                                    <div class="form-group col-lg-6">
+                                        <label>Total Pagamento:</label>
+                                        <input type="text" class="form-control" name="total" id="total" placeholder="" value="<%= ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')   %>" readonly="true">                                                               
+                                    </div>    
+                                    
+                                    <div class="form-group col-lg-6">
+                                        <label>Total Pago:</label>
+                                        <input type="text" class="form-control" name="pago" id="pago" placeholder="" value="<%=  ( subTotal - pago ).toFixed(2).replace(',','').replace('.',',')  %>" onkeyup="formataValor(this,event);" autofocus>                                                               
+                                    </div>   
+                                                                                        
+                                </div>
+                            </div>                                        
+                        </div>                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/balcao/<%= pdv %>'">Cancelar</button>
+                            <button type="submit" class="btn btn-primary"> Pagar</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div> 
+
+        <div class="modal modal-danger fade" id="finalicarVendas">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Finalizar Venda</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja finalizar toda Venda?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/balcao/<%= pdv %>">
+                            Cancelar
+                        </a>
+                        <a class="btn btn-outline" href="/finalizarVendas/<%=  pdv   %>">
+                            Confirmar
+                        </a>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
 
-            <!-- /.content-wrapper -->
-        <% include /templates/footer %>
+        <div class="modal fade" id="buscarProdutoPesquisa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">                                                
+                <div class="modal-content">                                            
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Buscar de Produtos</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">                                                                            
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <table id="griditens" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>                                    
+                                                <th>Ean</th>                                                    
+                                                <th>Nome</th>
+                                                <th>Estoque</th>
+                                                <th>Unitário</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for( var i = 0; i < produtos.length; i++) { %>
+                                                <tr>
+                                                    
+                                                    <td><%= produtos[i].ean %></td>
+                                                    <td><%= produtos[i].nome %></td>
+                                                    <td><%= produtos[i].estoque %></td>
+                                                    <td><%= produtos[i].preco.toFixed(2) %></td>
+                                                    <td><img src="<%= produtos[i].pathImagem ? produtos[i].pathImagem : 'images/noImagem.png' %>" width='58' height='40' alt="<%= produtos[i].pathImagem %>"></td>
+                                                    <td>
+                                                        <div class="tools">                                                         
+                                                            <a href="#"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+          
+        <div class="modal fade" id="buscarClientePesquisa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">                                                
+                <div class="modal-content">                                            
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Buscar de Clientes</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">                                                                            
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <table id="griditens" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>                                    
+                                                <th>Cnpj</th>                                                    
+                                                <th>Nome</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for( var i = 0; i < clientes.length; i++) { %>
+                                                <tr>
+                                                    
+                                                    <td><%= clientes[i].cgccpf %></td>
+                                                    <td><%= clientes[i].nome %></td>
+                                                    <td>
+                                                        <div class="tools">                                                         
+                                                            <a href="#"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>  
 
+        <div class="modal fade" id="novoClienteVenda" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">                                                
+                <div class="modal-content">                                            
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Novo Cliente</h4>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="container-fluid">
+                            <div class="row">                                                    
+                                <div class="form-group col-lg-4">
+                                    <label>Cpf ou Cnpj*:</label>
+                                    <input type="text" class="form-control" name="cgccpf" id="cgccpf" placeholder="" value="" autocomplete="off" required="true" onkeypress="return SomenteNumero();" MaxLength="18" OnChange="AplicarMascaraCpfCnpj(this);" autofocus >
+                                </div>  
+                                <div class="form-group col-lg-8">
+                                    <label>Nome*:</label>
+                                    <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="" autocomplete="off" MaxLength="200" required="true">
+                                </div>    
+                                <div class="form-group col-lg-6">
+                                    <label>Fone:</label>
+                                    <input type="tel" class="form-control" name="fone" id="fone" placeholder="" value="" MaxLength="20" onkeyup="formataTelefone(this,event);" autocomplete="off">
+                                </div>  
+                                <div class="form-group col-lg-6">
+                                    <label>E-mail:</label>
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="" value="" MaxLength="200" autocomplete="off">
+                                </div>                                              
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-lg-3">
+                                    <label>Cep:</label>
+                                    <input type="text" class="form-control" name="cep" id="cep" placeholder="" value="" autocomplete="off" MaxLength="9" onkeyup="formataCEP(this,event);">
+                                </div>
+                                <div class="form-group col-lg-7">
+                                    <label>Endereço:</label>
+                                    <input type="text" class="form-control" name="endereco" id="endereco" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                </div> 
+                                <div class="form-group col-lg-2">
+                                    <label>Número:</label>
+                                    <input type="text" class="form-control" name="numero" id="numero" placeholder="" value="" autocomplete="off" MaxLength="30">
+                                </div> 
+                                <div class="form-group col-lg-12">
+                                    <label>Complemento:</label>
+                                    <input type="text" class="form-control" name="complemento" id="complemento" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <label>Uf</label>
+                                    <select class="form-control" style="width: 100%;">
+                                        <option value="">UF</option>
+                                        <option value="AC">AC</option>
+                                        <option value="AL">AL</option>
+                                        <option value="AP">AP</option>
+                                        <option value="AM">AM</option>
+                                        <option value="BA">BA</option>
+                                        <option value="CE">CE</option>
+                                        <option value="DF">DF</option>
+                                        <option value="GO">GO</option>
+                                        <option value="MA">MA</option>
+                                        <option value="MT">MT</option>
+                                        <option value="MS">MS</option>
+                                        <option value="MG">MG</option>
+                                        <option value="PA">PA</option>
+                                        <option value="PB">PB</option>
+                                        <option value="PR">PR</option>
+                                        <option value="PE">PE</option>
+                                        <option value="PI">PI</option>
+                                        <option value="RJ">RJ</option>
+                                        <option value="RN">RN</option>
+                                        <option value="RS">RS</option>
+                                        <option value="RO">RO</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SP">SP</option>
+                                        <option value="SE">SE</option>
+                                        <option value="TO">TO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-5">
+                                    <label>Bairro:</label>
+                                    <input type="text" class="form-control" name="bairro" id="bairro" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                </div>
+                                <div class="form-group col-lg-5">
+                                    <label>Cidade:</label>
+                                    <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                </div>
+                                        
 
+                            </div>
+                        </div>  
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/cliente'">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>   
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>  
+        <!-- /.content-wrapper -->
+        <% include /templates/footer %>        
+        
+        
         <div class="control-sidebar-bg"></div>
     </div>
 </body>
-<script>
-        $(function () {
-        
-            $('#grditens').DataTable({
-            "scrollY":        "100px",
-            "scrollCollapse": true,
-            "paging":         false,
-            'ordering'    : false,
-            'autoWidth'   : false,
-            'searching'   : false,
-            'info'        : false,
-            "language": {
-                "url": 'https://cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json'
-            }
-            })
-        })
-    </script>
+
+
 <% include /templates/scripts %>
+<script>
+        $(document).ready(function() {
+        var table = $('#griditens').DataTable( {
+            scrollY:        "200px",        
+            searching: false,
+            info: false,
+            scrollX:        true,
+            scrollCollapse: true,
+            paging:         false,
+            fixedColumns:   true
+           
+        } );
+    } );
+    </script>
+
 
 </html>
