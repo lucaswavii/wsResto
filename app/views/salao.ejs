@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include /templates/head %>
+</head>
+
+<% function leftPad(value, totalWidth, paddingChar) { %>
+<%      var length = totalWidth - value.toString().length + 1; %>
+<%      return Array(length).join(paddingChar || '0') + value; %>
+<%  }; %>
+<% var now = new Date() %>
+<% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+<% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+<% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+
+<% function getFormattedDate(date) { %>
+    <%  var year = date.getFullYear(); %>
+    <%  var month = (1 + date.getMonth()).toString(); %>
+    <%  month = month.length > 1 ? month : '0' + month; %>
+    <%  var day = date.getDate().toString(); %>
+    <%  day = day.length > 1 ? day : '0' + day; %>
+    <%  return day + '/' + month + '/' + year %>
+<% } %>
+
+<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <% include /templates/header %>
+
+        <div class="content-wrapper">
+            <!-- escrever conteúdo do sistema -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Salão de Atendimento</h3>
+                                <div class="box-tools">
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        
+                                        <input type="text" name="table_search" class="form-control pull-right" placeholder="Pesquisa">
+                    
+                                        <div class="input-group-btn">
+                                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <section class="content">
+                                <% var livre = 0; var ocupado = 0; var negociando = 0; var bloqueado = 0;%>
+
+                                <% for( var i = 0; i < mesas.length; i++) {%>
+                                    <% if( pdvs.length > 0 ) { %>
+                                        <% if( mesas[i].situacao == 'Livre' ) { %>
+                                            <a data-toggle="modal" data-target="#modal-abre-<%= mesas[i].mesa %>" class="btn btn-app" data-toggle="tooltip" title="" data-original-title="Aguardando Atendimento">
+                                                <span class="badge bg-green"><%= mesas[i].situacao %></span>
+                                                <i class="fa fa-hand-stop-o"></i><%= mesas[i].mesanome %>
+                                            </a>
+                                            <div class="modal fade" id="modal-abre-<%= mesas[i].mesa %>">
+                                                <div class="modal-dialog">
+                                                    <form role="form" action="/abreVendaMesa" method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                                <h4 class="modal-title">Abertura de Mesa - <%= mesas[i].mesanome %></h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        
+                                                                        
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Data:</label>                                                                        
+                                                                            <input type="date" class="form-control" name="data" required="true" value="<%= hoje  %>" readonly="true">
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Hora:</label>
+                                                                            <input type="time" class="form-control" name="hora" value="<%= hora  %>" required="true" readonly="true">
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-6" >
+                                                                            <label>Mesa:</label>
+                                                                            <select class="form-control" required="true" name="mesa">
+                                                                                <option value="<%= mesas[i].mesa %>"><%= mesas[i].mesanome %></option>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-6" >
+                                                                            <label>Atendente:</label>
+                                                                            <select class="form-control" required="true" name="atendente"> 
+                                                                                <% if( funcionarios.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < funcionarios.length; e++) {%>
+                                                                                        <option value="<%= funcionarios[e].id %>" <%= funcionarios[e].id == sessao.fcid ? 'selected' : '' %>><%= funcionarios[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>                                                                        
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-6" >
+                                                                            <label>Caixa:</label>
+                                                                            <select class="form-control select2" required="true" name="pdv" style="width: 100%;">                                                                          
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( pdvs.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < pdvs.length; e++) {%>
+                                                                                        <% var frenteDeLojaAberto =  caixas.find((it) => { return it.id === pdvs[e].caixa ; }); %>
+
+                                                                                        <option value="<%= pdvs[e].id %>"><%= frenteDeLojaAberto.nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                           
+                                                                        </div>
+                                                                        <div class="form-group col-lg-6" >
+                                                                            <label>Cliente:</label>
+                                                                            <select class="form-control select2" required="true" name="cliente" style="width: 100%;">                                                                          
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( clientes.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < clientes.length; e++) {%>
+                                                                                        <option value="<%= clientes[e].id %>"><%= clientes[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>                                                                    
+                                                                    </div>
+                                                                </div>                                                                  
+                                                            </div>                                                        
+                                                            <div class="modal-footer">
+                                                                <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/salao'">Cancelar</button>
+                                                                <button type="submit" class="btn btn-primary">Salvar</button>
+                                                            </div>                                                        
+                                                        </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>                                            
+                                            <% livre += 1; %>
+                                        <% } else if( mesas[i].situacao == 'Ocupada' ) { %>
+                                            <a class="btn btn-app" data-toggle="tooltip" title="" data-original-title="Em Atendimento">
+                                                <span class="badge bg-red"><%= mesas[i].situacao %></span>
+                                                <i class="fa fa-hand-grab-o"></i> <%= mesas[i].mesanome %>
+                                            </a>
+                                            <% ocupado += 1; %>                                    
+                                        <% } else { %>
+                                            <a class="btn btn-app" data-toggle="tooltip" title="" data-original-title="Fechando Conta">
+                                                <span class="badge bg-yellow"><%= mesas[i].situacao %></span>
+                                                <i class="fa fa-hand-scissors-o"></i> <%= mesas[i].mesanome %>
+                                            </a>
+                                            <% negociando += 1; %> 
+                                        <% } %>
+                                    <% } else { %>
+                                        <a class="btn btn-app" data-toggle="tooltip" title="" data-original-title="Bloqueado">
+                                            <span class="badge bg-red">Bloqueado</span>
+                                            <i class="fa fa-lock"></i> <%= mesas[i].mesanome %>
+                                        </a>
+                                        <% bloqueado += 1; %>
+                                    <% } %>
+                                <% } %>
+                                </section>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Menu</h3>
+                            </div>
+                            <div class="box-body">
+                                <button type="button" class="btn btn-default btn-block"><i class="fa fa-hand-stop-o"></i> Abre Mesa</button>
+                                <button type="button" class="btn btn-default btn-block"><i class="fa fa-fw fa-random"></i> Transferir Mesa</button>
+                                <button type="button" class="btn btn-default btn-block"><i class="fa fa-print"></i> Imprimir Mesa</button>
+                                <button type="button" class="btn btn-default btn-block"><i class="fa fa-pencil-square-o"></i> Fechar Mesa</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Totalizadores</h3>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <li><a><i class="fa fa-hand-stop-o"></i> Livre
+                                            <span class="label label-success pull-right"><%= livre %></span></a></li>
+                                        <li><a><i class="fa fa-hand-grab-o"></i> Ocupada
+                                            <span class="label label-danger pull-right"><%= ocupado %></span></a></li>
+                                        <li><a><i class="fa fa-hand-scissors-o"></i> Negociando
+                                            <span class="label label-warning pull-right"><%= negociando %></span></a></li>
+                                        <li><a><i class="fa fa-lock"></i> Bloqueado
+                                            <span class="label label-default pull-right"><%= bloqueado %></span></a></li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </section>
+
+        </div>
+</body>
+<% include /templates/scripts %>
+
+</html>

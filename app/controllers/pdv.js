@@ -29,9 +29,9 @@ module.exports.index = function( application, req, res ){
             res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}], pdvs : {}, caixas:{}, sessao: req.session.usuario  });
             return;
         }
-        pdvDao.listar(function(error, pdvs){
+        pdvDao.listar(empresa, function(error, pdvs){
             
-            var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id && it.empresa === caixa.empresa; });
+            var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id; });
                                   
             if( frenteDeLojaAberto ) {
                
@@ -88,13 +88,14 @@ module.exports.abre = function( application, req, res ){
             res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}], pdvs : {}, caixas:{}, resumoPagamento:{},sessao: req.session.usuario  });
             return;
         }
-        pdvDao.listar(function(error, pdvs){
+        pdvDao.listar(empresa, function(error, pdvs){
             var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id && it.empresa === caixa.empresa; });
 
             if( !frenteDeLojaAberto ) {
-
+                var saldo = dadosForms.saldo.replace('.','').replace(',','.');
+                dadosForms.saldo = saldo;
                 pdvDao.salvar( dadosForms, function(error, pdvs){
-                    console.log(error)
+                    
                     connection.end(); 
                     res.redirect('/pdv')
                 });
@@ -141,7 +142,7 @@ module.exports.fecha = function( application, req, res ){
             res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}], pdvs : {}, caixas:{}, sessao: req.session.usuario  });
             return;
         }
-        pdvDao.listar(function(error, pdvs){
+        pdvDao.listar(empresa, function(error, pdvs){
             var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id && it.empresa === caixa.empresa; });
 
             if( frenteDeLojaAberto ) {

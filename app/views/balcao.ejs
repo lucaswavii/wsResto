@@ -185,34 +185,35 @@
                                       
                                                 <thead>                                                    
                                                 </thead>
-                                            <% var pago = 0; var troco = 0; %>
-                                            <% if( pagar.length > 0 ) {%>
-                                                
                                                 <tbody>
-                                                    <% for( var i = 0; i < pagar.length; i++) { %>
-                                                        <% pago  += pagar[i].pago %>
-                                                        <% troco += pagar[i].troco > 0 ? pagar[i].troco : 0 %>
-                                                        <tr>
-                                                            <td><%= i + 1 %>.</td>
-                                                            <td>
-                                                                <% for(var e=0; e < pagamentos.length; e++) {%>
-                                                                    <% if( pagar[i].condpagamento== pagamentos[e].id ) { %>
-                                                                        <%= pagamentos[e].nome %>
+                                                    <% var pago = 0; var troco = 0; %>
+                                                    <% if( pagar.length > 0 ) {%>
+                                                
+                                                        
+                                                        <% for( var i = 0; i < pagar.length; i++) { %>
+                                                            <% pago  += pagar[i].pago %>
+                                                            <% troco += pagar[i].troco > 0 ? pagar[i].troco : 0 %>
+                                                            <tr>
+                                                                <td><%= i + 1 %>.</td>
+                                                                <td>
+                                                                    <% for(var e=0; e < pagamentos.length; e++) {%>
+                                                                        <% if( pagar[i].condpagamento== pagamentos[e].id ) { %>
+                                                                            <%= pagamentos[e].nome %>
+                                                                        <% } %>
                                                                     <% } %>
-                                                                <% } %>
-                                                            </td>
-                                                            <td><%= pagar[i].valor.toFixed(2) %></td>
-                                                            <td><%= pagar[i].pago.toFixed(2) %></td>
-                                                            <td><%= pagar[i].troco > 0 ? pagar[i].troco .toFixed(2) : '0.00' %></td>
-                                                            <td>                                                            
-                                                                <div class="tools">
-                                                                
-                                                                    <a href="/cancelarPagamentoVendas/<%= pagar[i].id %>"><i class="fa fa-trash-o"></i></a>
-                                                                                                                                    
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    <% } %>
+                                                                </td>
+                                                                <td><%= pagar[i].valor.toFixed(2) %></td>
+                                                                <td><%= pagar[i].pago.toFixed(2) %></td>
+                                                                <td><%= pagar[i].troco > 0 ? pagar[i].troco .toFixed(2) : '0.00' %></td>
+                                                                <td>                                                            
+                                                                    <div class="tools">
+                                                                    
+                                                                        <a href="/cancelarPagamentoVendas/<%= pagar[i].id %>"><i class="fa fa-trash-o"></i></a>
+                                                                                                                                        
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <% } %>
                                                     <tr>
                                                         <td>Total:</td>
                                                         <td></td>
@@ -493,7 +494,7 @@
                             <div class="row">                                                                            
                                 <!-- /.box-header -->
                                 <div class="box-body">
-                                    <table id="griditens" class="table table-bordered table-striped">
+                                    <table id="gridbuscarclientes" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>                                    
                                                 <th>Cnpj</th>                                                    
@@ -634,7 +635,7 @@
 
 <% include /templates/scripts %>
 <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
         var table = $('#griditens').DataTable( {
             scrollY:        "200px",        
             searching: false,
@@ -646,7 +647,27 @@
            
         } );
     } );
-    </script>
+    $(document).ready(function() {
+        var table = $('#gridparcelas').DataTable( {
+            scrollY:        "200px",        
+            searching: false,
+            info: false,
+            scrollX:        true,
+            scrollCollapse: true,
+            paging:         false,
+            fixedColumns:   true
+           
+        } );
+        var cliente = $('#gridbuscarclientes').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : true
+            })
+    } );
+</script>
 
 
 </html>

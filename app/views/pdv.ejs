@@ -187,7 +187,7 @@
                                                 <li><a href="#"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
                                                 <li><a href="#"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
                                                 <li><a href="/balcao/<%= pdvs.id %>"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                                <li><a href="#"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                                <li><a href="/salao"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
                                                 <li><a href="#"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
                                                 <li><a href="#" data-toggle="modal" data-target="#modal-default-fechamento"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
                                             <% } else { %>
@@ -259,11 +259,11 @@
 
                                             <div class="form-group col-lg-6">
                                                 <label>Fundo:</label>
-                                                <input type="text" class="form-control" name="fundo" id="fundo" placeholder="" value="0.00">                                                               
+                                                <input type="text" class="form-control" name="fundo" id="fundo" placeholder="" value="0.00" readonly="true">                                                               
                                             </div>
                                             <div class="form-group col-lg-6">
                                                 <label>Saldo:</label>
-                                                <input type="text" class="form-control" name="saldo" id="saldo" placeholder="" value="0.00">                                                               
+                                                <input type="text" class="form-control" name="saldo" id="saldo" placeholder="" value="0,00" onkeyup="formataValor(this,event);">                                                               
                                             </div>
                                             
                                         </div>

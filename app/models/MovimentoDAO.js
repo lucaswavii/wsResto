@@ -16,6 +16,18 @@ MovimentoDAO.prototype.listaVendaFechamento = function( pdv, callback) {
 	this._connection.query(sql, pdv, callback);	
 }
 
+MovimentoDAO.prototype.listaMesasSalao = function( empresa, callback) {
+
+	var sql = " SELECT  ( CASE WHEN (select pagamento.movimento from PAGAMENTO pagamento where pagamento.movimento = movimento.id) != null THEN 'Negociando' when movimento.id > 0 then 'Ocupada' else 'Livre' end) as situacao, mesa.id as mesa, mesa.nome as mesanome, movimento.id as cupom, sum( item.total) as total "
+	sql += " FROM MESA mesa "
+	sql += " left outer join MOVIMENTO movimento on ( movimento.mesa = mesa.id) "
+	sql += " left outer join ITEM item on ( item.movimento = movimento.id ) "
+	sql += " where movimento.fim is null and mesa.empresa = ? "
+	sql += " group by mesa.id, mesa.nome, movimento.id "
+
+	this._connection.query(sql, empresa, callback);	
+}
+
 MovimentoDAO.prototype.listar = function( callback) {
 	this._connection.query('select * from MOVIMENTO order by id', callback);	
 }
