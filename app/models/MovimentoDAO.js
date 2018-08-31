@@ -18,7 +18,7 @@ MovimentoDAO.prototype.listaVendaFechamento = function( pdv, callback) {
 
 MovimentoDAO.prototype.listaMesasSalao = function( empresa, callback) {
 
-	var sql = " SELECT  ( CASE WHEN (select pagamento.movimento from PAGAMENTO pagamento where pagamento.movimento = movimento.id) != null THEN 'Negociando' when movimento.id > 0 then 'Ocupada' else 'Livre' end) as situacao, mesa.id as mesa, mesa.nome as mesanome, movimento.id as cupom, sum( item.total) as total "
+	var sql = " SELECT  ( CASE WHEN (select distinct count(*) from PAGAMENTO pagamento where pagamento.movimento = movimento.id) > 0 THEN 'Negociando' when movimento.id > 0 then 'Ocupada' else 'Livre' end) as situacao, mesa.id as mesa, mesa.nome as mesanome, movimento.id as cupom, sum( item.total) as total "
 	sql += " FROM MESA mesa "
 	sql += " left outer join MOVIMENTO movimento on ( movimento.mesa = mesa.id) "
 	sql += " left outer join ITEM item on ( item.movimento = movimento.id ) "

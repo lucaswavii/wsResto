@@ -103,10 +103,12 @@ module.exports.incluirItemPorEan = function( application, req, res ){
                     produto: produtos[0].id,
                     quantidade: 1,
                     unitario: produtos[0].preco,
-                    total: produtos[0].preco
+                    total: produtos[0].preco,
+                    atendente: req.session.usuario.fcid
                 };
                 
                 itemDao.salvar(item, function(error, result){
+                    console.log(error)
                     produtos[0].estoque = produtos[0].estoque -1; 
                     produtoDao.salvar( produtos[0], function(error, produtos){});
                     connection.end();
@@ -148,7 +150,7 @@ module.exports.cancelarVendas = function( application, req, res ){
         
         itemDao.listar( movimentos[0].id, function(error, itens ){
             
-            if( itens.length > 0 ) {
+            if( itens && itens.length > 0 ) {
                 for(var i=0; i < itens.length; i++) {
                     var prod = itens[i]
                     produtoDao.editar(itens[i].produto, function(error, produto ){
@@ -167,7 +169,7 @@ module.exports.cancelarVendas = function( application, req, res ){
                 });
 
             } else {
-                movimentoDao.salvar(movimento[0], function(error, result){    
+                movimentoDao.salvar(movimentos[0], function(error, result){    
                     connection.end();  
                     res.redirect('/balcao/' + idPdv);
                 });
@@ -187,7 +189,7 @@ module.exports.pagamentoVendas = function( application, req, res ){
         res.redirect("/login");
         return;			
     }
-
+    var empresa = req.session.usuario.emid;
     var connection = application.config.dbConnection();           
     var pagarDao = new application.app.models.PagarDAO(connection); 
     var movimentoDao = new application.app.models.MovimentoDAO(connection); 
@@ -196,7 +198,7 @@ module.exports.pagamentoVendas = function( application, req, res ){
     
     movimentoDao.listaVendaBalcao( idPdv, function(error, movimentos){
 
-        pdvDao.listar(function(error, pdvs){
+        pdvDao.listar(empresa, function(error, pdvs){
             
             var frenteDeLojaAberto =  pdvs.find((it) => { return it.id === movimentos[0].pdv; });
             

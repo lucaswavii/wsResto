@@ -3,10 +3,10 @@ var mysql = require('mysql');
 var connMysql = function() {
 	
 	return mysql.createConnection({
-		host : '',
+		host : '18.218.132.80',
 		user: 'root',
-		password: '',
-		database: ''
+		password: 'Wa180279',
+		database: 'wsRestaurante'
 });
 }
 
