@@ -21,11 +21,19 @@
                     <div class="col-md-7">
                         <div class="box">
                             <div class="box-header">
-                                                                
-                                <a class="btn btn-link" href="/salao" style="color:rgb(0, 0, 0);" accesskey="V"><i class="fa fa-mail-reply"></i> <u>V</u>oltar</a> 
-                                <a class="btn btn-link" href="#" style="color:rgb(0, 0, 0);" accesskey="N"><i class="fa fa-fw fa-male"></i> <u>N</u>ovo Cliente</a> 
-                                <a class="btn btn-link" href="#" style="color:rgb(0, 0, 0);" accesskey="T"><i class="fa fa-fw fa-exchange"></i> <u>T</u>rocar Cliente</a> 
+                                    
+                                    <h3 class="box-title">
+                                            Mesa: <b><%= mesas[0].nome %></b>
+                                   
+                                    </h3>
                                 
+                                <div class="box-tools pull-right">
+                                    <a class="btn btn-link" href="/salao" style="color:rgb(0, 0, 0);" accesskey="V"><i class="fa fa-mail-reply"></i> <u>V</u>oltar</a> 
+                                    <a class="btn btn-link" href="#" style="color:rgb(0, 0, 0);" accesskey="N"><i class="fa fa-fw fa-male"></i> <u>N</u>ovo Cliente</a> 
+                                    <a class="btn btn-link" href="#" style="color:rgb(0, 0, 0);" accesskey="T"><i class="fa fa-fw fa-exchange"></i> <u>T</u>rocar Cliente</a> 
+                                    <a class="btn btn-link" href="#" style="color:rgb(0, 0, 0);" accesskey="T"><i class="fa fa-fw fa-print"></i> <u>I</u>mprimir</a> 
+                                </div>                                
+                                                        
                                 <% if (flash.errorMessage ) { %>
                                     <p class="text-red"><b></b></p>
                                     <div class="alert alert-warning alert-dismissible">
@@ -61,11 +69,47 @@
                                         <tbody>
                                             <% for( var i = 0; i < produtos.length; i++) {%>
                                                 <tr>                                                    
-                                                    <td><a href=<%= pago > 0 ? '#' : '' %>> <%= produtos[i].nome %></a></td>
+                                                    <td><a href="#" data-toggle="modal" data-target="#modal-item-<%= pago > 0 ? '' : produtos[i].id  %>"> <%= produtos[i].nome %></a></td>
                                                     <td><%= produtos[i].preco.toFixed(2) %></td>
                                                     <td><%= produtos[i].estoque.toFixed(2) %></td>
                                                     <td><img src="<%= produtos[i].pathImagem ? produtos[i].pathImagem : 'images/noImagem.png' %>" width='58' height='40' alt="<%= produtos[i].pathImagem %>"></td>
                                                 </tr>
+                                                <div class="modal fade" id="modal-item-<%= produtos[i].id %>">
+                                                    <div class="modal-dialog">
+                                                        <form role="form" action="/incluirItem/<%= idCupom %>" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    <h4 class="modal-title">Adicionar Item Mesa</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="container-fluid">
+                                                                        <div class="row"> 
+                                                                            <div class="form-group col-lg-8" >
+                                                                                <label>Produto:</label>
+                                                                                <select class="form-control select2" required="true" name="produto" style="width: 100%;">
+                                                                                    <option value="<%= produtos[i].id %>"><%= produtos[i].nome %> (QDE: <%= produtos[i].estoque.toFixed(2) %>) - R$: <%= produtos[i].preco.toFixed(2) %></option>
+                                                                                </select>
+                                                                            </div>   
+                                                                            <div class="form-group col-lg-4" >  
+                                                                                <label>Quantidade:</label>                                      
+                                                                                <input type="number" class="form-control" id="quantidade" name="quantidade" autocomplete="off" required="true" placeholder="" value="1" autofocus>
+                                                                            </div>                                                              
+                                                                        </div>
+                                                                    </div>                                                                  
+                                                                </div>                                                        
+                                                                <div class="modal-footer">
+                                                                    <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/item/<%= idCupom %>'">Cancelar</button>
+                                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                                </div>                                                        
+                                                            </div>
+                                                        </form>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>  
                                             <% } %>
                                         </tbody>
                                     </table>
@@ -76,6 +120,9 @@
                     <div class="col-md-5">
                         <div class="box">
                             <div class="box-header">
+                                <div class="box-tools pull-right">
+                                    Cliente: <b><%= cliente.nome %></b>                                
+                                </div>
                                 <label>Filtro Categoria:</label>
                                 <div class="input-group margin">
                                     <select class="form-control" required="true" name="filtroCategorias" <%= pago > 0 ? 'readonly="true"' : '' %> >
@@ -122,7 +169,7 @@
                                                 <td>                                                            
                                                     <div class="tools">
                                                         <% if( !itens[i].cancelamento ) { %>
-                                                            <a href="<%= pago > 0 ? '#' : '/cancelaItem/' + itens[i].id %>"><i class="fa fa-trash-o"></i></a>
+                                                            <a href="<%= pago > 0 ? '#' : '/cancelaItemMesa/' + itens[i].id %>"><i class="fa fa-trash-o"></i></a>
                                                         <% } else { %>
                                                             <p class="text-red"><b>
                                                                 Cancelado                                                                    

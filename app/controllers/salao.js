@@ -52,3 +52,16 @@ module.exports.abreVendaMesa = function( application, req, res ){
         res.redirect("/salao");
     });  
 };
+
+module.exports.atendeMesa = function( application, req, res ){
+    var dadosForms = req.body;
+ 
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+    connection.end();
+    res.redirect("/item/" + dadosForms.mesa );
+
+ 
+}

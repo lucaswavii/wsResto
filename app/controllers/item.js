@@ -12,18 +12,30 @@ module.exports.atendimento = function( application, req, res ){
     var pagarDao = new application.app.models.PagarDAO(connection);
     var pagamentoDao = new application.app.models.PagamentoDAO(connection);
     var categoriaDao = new application.app.models.CategoriaDAO(connection);
-    
-    categoriaDao.listar(function(error, categorias){
+    var movimentoDao = new application.app.models.MovimentoDAO(connection);
+    var mesaDao = new application.app.models.MesaDAO(connection);
+    var clienteDao = new application.app.models.ClienteDAO(connection);
+ 
+    movimentoDao.editar( idCupom, function(error, movimentos ){
 
-        pagamentoDao.listar(function(error, pagamentos){
-
-            produtoDao.listar(function(error, produtos){
-
-                itemDao.listar(idCupom, function(error, itens){
+        clienteDao.editar( movimentos[0].cliente, function(error, cliente ){
+            
+            mesaDao.editar( movimentos[0].mesa, function(error, mesas ){
                 
-                    pagarDao.listar(idCupom, function(error, pagar){
-                        res.render('item', { validacao :{}, idCupom:idCupom, itens:itens, categorias:categorias, produtos:produtos, pagar:pagar, pagamentos:pagamentos, sessao:req.session.usuario  });
-                        return;
+                categoriaDao.listar(function(error, categorias){
+
+                    pagamentoDao.listar(function(error, pagamentos){
+
+                        produtoDao.listar(function(error, produtos){
+
+                            itemDao.listar(idCupom, function(error, itens){
+                            
+                                pagarDao.listar(idCupom, function(error, pagar){
+                                    res.render('item', { validacao :{}, cliente:cliente[0], idCupom:idCupom, mesas:mesas, itens:itens, categorias:categorias, produtos:produtos, pagar:pagar, pagamentos:pagamentos, sessao:req.session.usuario  });
+                                    return;
+                                });
+                            });
+                        });
                     });
                 });
             });
@@ -154,6 +166,45 @@ module.exports.cancelarPagamentoMesa = function( application, req, res ){
                 res.redirect('/item/' + movimentos[0].id );
 
             });
+        });
+    });
+}
+
+module.exports.cancelaItemMesa = function( application, req, res ){
+    var id = req.params._id;
+
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+
+    var connection = application.config.dbConnection();           
+    var itemDao = new application.app.models.ItemDAO(connection);
+    var produtoDao = new application.app.models.ProdutoDAO(connection);
+
+    itemDao.editar( id, function(error, item){
+        
+        var cupom = item[0].movimento;
+
+        item[0].cancelamento = new Date();
+        item[0].cancelador = req.session.usuario.fcid
+        item[0].total = 0;
+
+        var idProduto = item[0].produto;
+        var quantidade = item[0].quantidade;
+
+        itemDao.salvar( item[0], function(error, result){
+
+            produtoDao.editar(idProduto,function(error, produtos){
+       
+                produtos[0].estoque = produtos[0].estoque +  quantidade;
+                
+                produtoDao.salvar(produtos,function(error, result){
+       
+                    connection.end();
+                    res.redirect('/item/'+ cupom );
+                });
+            });            
         });
     });
 }

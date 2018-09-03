@@ -16,6 +16,10 @@ module.exports = function(application){
         application.app.controllers.item.cancelarPagamentoMesa(application, req, res);
     });
 
+    application.get('/cancelaItemMesa/:_id', function(req, res){
+        application.app.controllers.item.cancelaItemMesa(application, req, res);
+    });
+
     application.post('/fechamentoMesa/:_id', function(req, res){
         application.app.controllers.item.fechamentoMesa(application, req, res);
     });

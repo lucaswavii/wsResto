@@ -105,7 +105,6 @@
                                                                         <div class="form-group col-lg-6" >
                                                                             <label>Caixa:</label>
                                                                             <select class="form-control select2" required="true" name="pdv" style="width: 100%;">                                                                          
-                                                                                <option value="">Selecione</option>
                                                                                 <% if( pdvs.length > 0 ) {%>
                                                                                     <% for(var e=0; e < pdvs.length; e++) {%>
                                                                                         <% var frenteDeLojaAberto =  caixas.find((it) => { return it.id === pdvs[e].caixa ; }); %>
@@ -254,7 +253,6 @@
                                             <div class="form-group col-lg-6" >
                                                 <label>Caixa:</label>
                                                 <select class="form-control select2" required="true" name="pdv" style="width: 100%;">                                                                          
-                                                    <option value="">Selecione</option>
                                                     <% if( pdvs.length > 0 ) {%>
                                                         <% for(var e=0; e < pdvs.length; e++) {%>
                                                             <% var frenteDeLojaAberto =  caixas.find((it) => { return it.id === pdvs[e].caixa ; }); %>
@@ -271,7 +269,7 @@
                                                     <option value="">Selecione</option>
                                                     <% if( clientes.length > 0 ) {%>
                                                         <% for(var e=0; e < clientes.length; e++) {%>
-                                                            <option value="<%= clientes[e].id %>"><%= clientes[e].nome %></option>
+                                                            <option value="<%= clientes[e].id %>" <%= clientes[e].consumidor == 'S' ? 'selected' : '' %>><%= clientes[e].nome %></option>
                                                         <% } %>
                                                     <% } %>
                                                 </select>
@@ -282,6 +280,44 @@
                                 <div class="modal-footer">
                                     <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/salao'">Cancelar</button>
                                     <button type="submit" class="btn btn-primary">Salvar</button>
+                                </div>                                                        
+                            </div>
+                        </form>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>   
+                <div class="modal fade" id="modal-atende">
+                    <div class="modal-dialog">
+                        <form role="form" action="/atendeMesa" method="GET">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Atende de Mesa</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">                   
+                                            <div class="form-group col-lg-12" >
+                                                <label>Mesa:</label>
+                                                <select class="form-control select2" required="true" name="mesa" style="width: 100%;">
+                                                    <% if( mesas.length > 0 ) {%>
+                                                        <% for(var e=0; e < mesas.length; e++) {%>
+                                                            <% if( mesas[e].situacao == 'Ocupada' ) { %>
+                                                            <option value="<%= mesas[e].id %>"><%= mesas[e].mesanome %></option>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>  
+                                                </select>
+                                            </div>                                                       
+                                        </div>
+                                    </div>                                                                  
+                                </div>                                                        
+                                <div class="modal-footer">
+                                    <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/salao'">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Ok</button>
                                 </div>                                                        
                             </div>
                         </form>

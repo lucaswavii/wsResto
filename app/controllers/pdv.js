@@ -26,9 +26,10 @@ module.exports.index = function( application, req, res ){
         
         if( !caixa ) {
             connection.end(); 
-            res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}], pdvs : {}, caixas:{}, sessao: req.session.usuario  });
+            res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}],  pdvs:{}, caixas:{}, resumoPagamento:{}, sessao: req.session.usuario  });
             return;
         }
+        
         pdvDao.listar(empresa, function(error, pdvs){
             
             var frenteDeLojaAberto =  pdvs.find((it) => { return it.caixa === caixa.id; });
