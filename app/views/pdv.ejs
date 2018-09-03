@@ -4,6 +4,7 @@
 <head>
     <% include /templates/head %>
 </head>
+
 <% function leftPad(value, totalWidth, paddingChar) { %>
 <%      var length = totalWidth - value.toString().length + 1; %>
 <%      return Array(length).join(paddingChar || '0') + value; %>
@@ -22,202 +23,213 @@
     <%  return day + '/' + month + '/' + year %>
 <% } %>
 
-<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
 
         <% include /templates/header %>
-        
-       
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+
         <div class="content-wrapper">
-                
             <!-- escrever conteúdo do sistema -->
-            <section class="content-header">
-            
-                <div class="col-md-8">
-                    <div class="box box-widget widget-user-2">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <% for(var i = 0; i < validacao.length; i++) {%>
-                            <div class="alert alert-danger alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <a href="#" class="alert-link">Ops!</a><%= validacao[i].msg %>
-                            </div>
-                        <% } %>
-        
-                        <% if( pdvs && pdvs.id ) { %>
-                        <div class="widget-user-header bg-green">
-                            <div class="widget-user-image">
-                                <img class="img-circle" src="../images/vendas-pdv.png" alt="User Avatar">
-                            </div>
-                            
-                            <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">PDV versão 1.0</h3>
-                            <h5 class="widget-user-desc">Caixa Aberto</h5>
-                            
-                        </div>
-                        <% } else { %>
-                        <div class="widget-user-header bg-red">
-                            <div class="widget-user-image">
-                                <img class="img-circle" src="../images/vendas-pdv.png" alt="User Avatar">
-                            </div>
-                            
-                            <!-- /.widget-user-image -->
-                            <h3 class="widget-user-username">PDV versão 1.0</h3>
-                            <h5 class="widget-user-desc">Caixa Fechado</h5>
-                            
-                        </div>
-
-                        
-                        <% } %>
-                        <div class="box-footer">
-                            <section class="content">
-                                <div class="box-footer no-padding">
-                                     <!-- /.box -->
-                                    <div class="box">
-                                        <div class="col-md-12">    
-                                            <div class="box-header">
-                                                <h3 class="box-title">Total de Vendas</h3>
-                                            </div>
-                                                <!-- /.box-header -->
-                                            <div class="box-body no-padding">
-                                                <table class="table table-condensed">
-                                                    <tr>
-                                                        <th style="width: 10px">#</th>
-                                                        <th>Tipo Pagamento</th>
-                                                        <th>Valor</th>
-                                                        
-                                                    </tr>
-                                                    <% var totalFechamento = 0;%>
-                                                    <% if(resumoPagamento && resumoPagamento.length > 0 ) { %>
-                                                        <% for(var i = 0; i < resumoPagamento.length; i++) {%>
-                                                            <tr>
-                                                                <td><%= i + 1 %>.</td>
-                                                                <td><%= resumoPagamento[i].condicao %></td>
-                                                                <td><%= resumoPagamento[i].total.toFixed(2) %></td>
-                                                                <% totalFechamento += resumoPagamento[i].total %>
-                                                            </tr>
-                                                        <% } %>
-                                                    <% } %>
-                                                    <tr>
-                                                        <td><h1>TOTAL:</h1></td>
-                                                        <td></td>
-                                                        <td><h1><%= totalFechamento.toFixed(2) %></h1></td>
-                                                        
-                                                    </tr>
-                                                                                                          
-                                                </table>
-                                            </div>
-                                        </div>
-                                                                        
-                                    </div>                                        
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user-2">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-yellow">
+                                <div class="widget-user-image">
+                                    <img class="img-circle" src="../images/logo_pdv.png" alt="User Avatar">
                                 </div>
-                            </section>
-                        </div> 
-                        <!-- 
-                        <div class="box-footer no-padding">
-                            <section class="content">
-                                <div class="col-md-12">
-                
-                                <% if( validacao.length > 0 ) { %>
-                                    <h1>CAIXA FECHADO</h1>
-                                    <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
-                                    <h5 class="widget-user-desc">Dirija-se ao próximo caixa.</h5>
-                            
-                                <% } else { %>
+                                <!-- /.widget-user-image -->
+                                <h3 class="widget-user-username">PDV - Versão 1.0</h3>
+                                <h5 class="widget-user-desc">Sistema de Frente de Loja</h5>
+                            </div>
+                            <div class="box-footer no-padding">
                                 
-                                    <% if( pdvs && pdvs.id ) { %>
-                        
-                                        <h1>CAIXA LIVRE</h1>
-                                        <h5 class="widget-user-desc">Seja Bem Vindo.</h5>
-                                        <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
-                            
-                                    <% } else { %>
-                        
-                                        <h1>CAIXA FECHADO</h1>
-                                        <h5 class="widget-user-desc">Dirija-se ao próximo caixa.</h5>
-                                        <img src="../images/pdv.jpg" width="50%" height="10%" align="middle" alt="Flowers in Chania">
-                            
-                                    <% } %>
-                                <% } %>
-                                <% for(var i = 0; i < validacao.length; i++) {%>
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                        <a href="#" class="alert-link">Ops!</a><%= validacao[i].msg %>
-                                    </div>
-                                <% } %>
-                
-                                </div>
-                                
-                            </section>
-                        </div> -->
-                    </div>
-                    
-                </div>
-                <div class="col-md-4">
-                    <!-- Widget: user widget style 1 -->
-                    <div class="box box-widget widget-user">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <% if( pdvs && pdvs.id ) { %>
-                        
-                        <div class="widget-user-header bg-aqua-active">
-                            <h3 class="widget-user-username"><%= sessao.nome %></h3>
-                            <h5 class="widget-user-desc">Aberto em: <%= getFormattedDate(pdvs.data) %></h5>
-                        </div>
-                        <div class="widget-user-image">
-                            <img class="img-circle" src="../images/opcaixa.png" alt="User Avatar">
-                        </div>
-                        
-                        <% } else { %>
-                        <div class="widget-user-header bg-red-active">
-                            <h3 class="widget-user-username"></h3>
-                            <h5 class="widget-user-desc">Caixa Fechado</h5>
-                        </div>
-                        <div class="widget-user-image">
-                            <img class="img-circle" src="../images/opcaixa.png" alt="User Avatar">
-                        </div>
-                        <% } %>
-                            
-                        <div class="box-footer">
-                            <section class="content">
-                                <div class="box-footer no-padding">
-                                    <ul class="nav nav-stacked">
+                                <div class="box-body"> 
+                                    <table id="grddados" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>                                                    
+                                                <th style="width: 10px">#</th>                                                                                          
+                                                <th>Atendente</th>
+                                                <th>Mesa</th>                                             
+                                                <th>Total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             
-                                        <% if( validacao.length > 0 ) { %>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-gray">F6</span></a></li>
-                                            <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
-                                        <% } else { %>
-                                            <% if( pdvs && pdvs.id ) { %>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
-                                                <li><a href="#"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
-                                                <li><a href="#"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
-                                                <li><a href="/balcao/<%= pdvs.id %>"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                                <li><a href="/salao"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-blue">F4</span></a></li>
-                                                <li><a href="#"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-blue">F6</span></a></li>
-                                                <li><a href="#" data-toggle="modal" data-target="#modal-default-fechamento"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
-                                            <% } else { %>
-                                                <li><a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i> Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i> Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-credit-card"></i> Receber Contas<span class="pull-right badge bg-gray">F6</span></a></li>
-                                                <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
+                                            <% var obj = new Object(); %>
+                                            <% var totalPendente = 0; %>
+                                            <% for(var i = 0; i < recebiveis.length; i++) {%>
+                                                <% if( !obj[ recebiveis[i].mesa ] ) { %>
+                                                   <% obj[ recebiveis[i].mesa ] = { id: recebiveis[i].idMesa, movimento: recebiveis[i].id, atendente: recebiveis[i].atendente, mesa: recebiveis[i].mesa , valor: 0, total: recebiveis[i].total } %>
+                                                <% } %>
+                                                <% obj[ recebiveis[i].mesa ].valor += recebiveis[i].valor  %>
                                             <% } %>
-                                        <% } %>
-                                    </ul>
-                                </div>
-                            </section>
-                            <!-- /.row -->
-                        </div>
-                    </div>
-                    <!-- /.widget-user -->
-                </div>     
 
+                                            <% var seq = 1;%>
+                                            <% for (const key in obj) { %>
+                                                <% if (obj.hasOwnProperty(key)) { %>
+                                                <%    const element = obj[key]; %>
+                                                <tr>
+                                                    <td>
+                                                        <%= seq++ %>.
+                                                    </td>
+                                                                                                            
+                                                    <td>
+                                                        <%= element.atendente %>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <%= element.mesa %>
+                                                    </td>
+
+                                                    <td>
+                                                        <%= element.valor.toFixed(2) %>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="tools">
+                                                            <a href="#"  data-toggle="modal" data-target="#modal-default-receber-<%= element.id  %>"><i class="fa fa fa-fw fa-money"></i></a>
+                                                        </div>
+                                                    </td>
+                                                    <% totalPendente += element.total %>
+                                                </tr>
+                                                
+                                                <div class="modal fade" id="modal-default-receber-<%= element.id %>">
+                                                    <div class="modal-dialog">
+                                                        <form role="form" action="/receberConta" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    <h4 class="modal-title"><%= element.mesa %></h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="container-fluid">
+                                                                        <div class="row">
+                                                                            <% for(var i = 0; i < recebiveis.length; i++) {%>
+                                                                                <% if( recebiveis[i].mesa == element.mesa ) { %>
+                                                                                    <div class="form-group col-lg-4">
+                                                                                        <label>Id:</label>                                                                        
+                                                                                        <input type="text" class="form-control" name="<%= i %>" required="true" value="<%=  recebiveis[i].pagamento  %>" readonly="true">
+                                                                                    </div>
+
+                                                                                    <div class="form-group col-lg-4" >
+                                                                                        <label>Pagamento:</label>
+                                                                                        <select class="form-control" required="true" name="<%= i %>">
+                                                                                            <<% if( pagamentos.length > 0 ) {%>
+                                                                                                <% for(var e=0; e < pagamentos.length; e++) {%>
+                                                                                                    <option value="<%= pagamentos[e].id %>" <%= recebiveis[i].condpagamento == pagamentos[e].id ? 'selected' : '' %>><%= pagamentos[e].nome %></option>
+                                                                                                <% } %>
+                                                                                            <% } %>     
+                                                                                        </select>
+                                                                                    </div>
+
+                                                                                    
+                                                                                     <div class="form-group col-lg-4">
+                                                                                        <label>R$:</label>                                                                        
+                                                                                        <input type="number" class="form-control" name="<%= i %>" required="true" value="<%=  recebiveis[i].valor.toFixed(2) %>" readonly="true">
+                                                                                    </div>
+                                                                                <% } %>
+                                                                            <% } %>                                                        
+                                                                        </div>
+                                                                    </div>                                                                  
+                                                                </div>                                                        
+                                                                <div class="modal-footer">
+                                                                    <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/pdv'">Cancelar</button>
+                                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                                </div>                                                        
+                                                            </div>
+                                                        </form>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>  
+                                                
+                                                <% } %>
+                                            <% } %>                                 
+                                        </tbody>
+                                  
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.widget-user -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-4">
+                        <!-- Widget: user widget style 1 -->
+                        <div class="box box-widget widget-user-2">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-yellow">
+                                <div class="widget-user-image">
+                                    <img class="img-circle" src="../images/vendas-pdv.png" alt="User Avatar">
+                                </div>
+                                <!-- /.widget-user-image -->
+                                <% if( pdvs && pdvs.id ) { %>
+                                <h3 class="widget-user-username"><%= sessao.nome %></h3>
+                                <h5 class="widget-user-desc">Aberto em: <%= getFormattedDate(pdvs.data) %></h5>
+                                <% } else { %>
+                                    <h3 class="widget-user-username">Caixa Fechado</h3>
+                                    <h5 class="widget-user-desc">Dirija-se ao próximo caixa.</h5>
+                                  
+                                <% } %>
+                            </div>
+                            <div class="box-footer no-padding">
+                                <ul class="nav nav-stacked">
+
+                                    <% if( validacao.length > 0 ) { %>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i>
+                                                Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i>
+                                                Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i>
+                                                Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i>
+                                                Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i>
+                                                Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i>
+                                                Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
+                                    <% } else if( pdvs && pdvs.id ) { %>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fw fa-hdd-o"></i>
+                                                Abertura Caixa<span class="pull-right badge bg-gray">F1</span></a></li>
+                                        <li><a href="#"><i class="fa fa-plus-circle"></i> Suprimentos<span class="pull-right badge bg-blue">F2</span></a></li>
+                                        <li><a href="#"><i class="fa fa-minus-circle"></i> Sangria<span class="pull-right badge bg-blue">F3</span></a></li>
+                                        <li><a href="/balcao/<%= pdvs.id %>"><i class="fa fa-fax"></i> Vendas
+                                                Balcão<span class="pull-right badge bg-blue">F4</span></a></li>
+                                        <li><a href="/salao"><i class="fa fa-sitemap"></i> Vendas Salão<span
+                                                    class="pull-right badge bg-blue">F4</span></a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#modal-default-fechamento"><i
+                                                    class="fa fa-archive"></i> Fechamento Caixa<span class="pull-right badge bg-blue">F5</span></a></li>
+                                    <% } else { %>
+                                        <li><a href="#" data-toggle="modal" data-target="#modal-default"><i
+                                                    class="fa fa-fw fa-hdd-o"></i> Abertura Caixa<span class="pull-right badge bg-blue">F1</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-plus-circle"></i>
+                                                Suprimentos<span class="pull-right badge bg-gray">F2</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-minus-circle"></i>
+                                                Sangria<span class="pull-right badge bg-gray">F3</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-fax"></i>
+                                                Vendas Balcão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-sitemap"></i>
+                                                Vendas Salão<span class="pull-right badge bg-gray">F4</span></a></li>
+                                        <li><a href="#" style="color: gray; pointer-events: none;"><i class="fa fa-archive"></i>
+                                                Fechamento Caixa<span class="pull-right badge bg-gray">F5</span></a></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.widget-user -->
+                    </div>
+                </div>
                 <div class="modal fade" id="modal-default">
                     <div class="modal-dialog">
                         <form role="form" action="/aberturaCaixa" method="post">
@@ -231,10 +243,10 @@
                                 <div class="modal-body">
                                     <div class="container-fluid">
                                         <div class="row">
-                                            
+
                                             <div class="form-group col-lg-6">
                                                 <label>Data:</label>
-                                                
+
                                                 <input type="date" class="form-control" name="data" required="true" value="<%= hoje  %>" readonly="true">
                                             </div>
 
@@ -242,52 +254,58 @@
                                                 <label>Hora:</label>
                                                 <input type="time" class="form-control" name="hora" value="<%= hora %>" required="true" readonly="true">
                                             </div>
-                                            <div class="form-group col-lg-6" >
+                                            <div class="form-group col-lg-6">
                                                 <label>Empresa:</label>
                                                 <select class="form-control" required="true" name="empresa" readonly="true">
-                                                    <option value="<%= sessao.emid %>"><%= sessao.emnome %></option>   
+                                                    <option value="<%= sessao.emid %>">
+                                                        <%= sessao.emnome %>
+                                                    </option>
                                                 </select>
                                             </div>
-                                            
-                                            
-                                            <div class="form-group col-lg-6" >
+
+
+                                            <div class="form-group col-lg-6">
                                                 <label>Caixa</label>
                                                 <select class="form-control" required="true" name="caixa" readonly="true">
                                                     <% if( caixas ) { %>
-                                                    <option value="<%= caixas.id %>"><%= caixas.nome %></option>
-                                                    <% } %>                                                                        
-                                                </select>                                                
+                                                        <option value="<%= caixas.id %>">
+                                                            <%= caixas.nome %>
+                                                        </option>
+                                                        <% } %>
+                                                </select>
                                             </div>
 
-                                            <div class="form-group col-lg-12" >
+                                            <div class="form-group col-lg-12">
                                                 <label>Funcionário</label>
                                                 <select class="form-control" required="true" name="operador">
-                                                    <option value="<%= sessao.fcid %>"><%= sessao.fcnome %></option>
+                                                    <option value="<%= sessao.fcid %>">
+                                                        <%= sessao.fcnome %>
+                                                    </option>
                                                 </select>
                                             </div>
 
                                             <div class="form-group col-lg-6">
                                                 <label>Fundo:</label>
-                                                <input type="text" class="form-control" name="fundo" id="fundo" placeholder="" value="0.00" readonly="true">                                                               
+                                                <input type="text" class="form-control" name="fundo" id="fundo" placeholder="" value="0.00" readonly="true">
                                             </div>
                                             <div class="form-group col-lg-6">
                                                 <label>Saldo:</label>
-                                                <input type="text" class="form-control" name="saldo" id="saldo" placeholder="" value="0,00" onkeyup="formataValor(this,event);">                                                               
+                                                <input type="text" class="form-control" name="saldo" id="saldo" placeholder="" value="0,00" onkeyup="formataValor(this,event);">
                                             </div>
-                                            
+
                                         </div>
-                                    </div>                                        
+                                    </div>
                                 </div>
-                                
+
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/pdv'">Cancelar</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/pdv'">Cancelar</button>
                                     <button type="submit" class="btn btn-primary">Salvar</button>
                                 </div>
                             </div>
                         </form>
                         <!-- /.modal-content -->
                     </div>
-                <!-- /.modal-dialog -->
+                    <!-- /.modal-dialog -->
                 </div>
 
                 <div class="modal fade" id="modal-default-fechamento">
@@ -298,16 +316,19 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <h4 class="modal-title">Fechamento do caixa - <%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %></h4>
+                                    <h4 class="modal-title">Fechamento do caixa -
+                                        <%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %>
+                                    </h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="container-fluid">
                                         <div class="row">
-                                            
+
                                             <div class="form-group col-lg-6">
                                                 <label>Fim:</label>
-                                                
-                                                <input type="text" class="form-control" name="fim" required="true" value="<%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %>" readonly="true">
+
+                                                <input type="text" class="form-control" name="fim" required="true" value="<%= pdvs && pdvs.id ? getFormattedDate(pdvs.data) : '' %>"
+                                                    readonly="true">
                                             </div>
 
                                             <div class="form-group col-lg-6">
@@ -320,54 +341,137 @@
                                                 Resumo de Vendas:
                                                 <table class="table table-condensed">
                                                     <tr>
-                                                        
+
                                                     </tr>
-                                                    <% var totalFechamento = 0;%>
+                                                    <% var totalFechamento = 0; var totalAberto = 0; var totalCliente = 0; %>
                                                     <% for(var i = 0; i < resumoPagamento.length; i++) {%>
+                                                        <% if( resumoPagamento[i].status == 'Aberto' ) { %>
                                                         <tr>
-                                                            <td><%= i + 1 %>.</td>
-                                                            <td><%= resumoPagamento[i].condicao %></td>
-                                                            <td><%= resumoPagamento[i].total.toFixed(2) %></td>
-                                                            <% totalFechamento += resumoPagamento[i].total %>
+                                                            <td>
+                                                                <%= i + 1 %>.
+                                                            </td>
+                                                            <td>
+                                                                <%= resumoPagamento[i].condicao %>
+                                                            </td>
+                                                            <td>
+                                                                <%= resumoPagamento[i].total.toFixed(2) %>
+                                                            </td>
+                                                            <% totalAberto += resumoPagamento[i].total %>
                                                         </tr>
+                                                        <% } else { %>
+                                                            <% totalFechamento += resumoPagamento[i].total %>
+                                                        <% } %>
+                                                        <% totalCliente += resumoPagamento[i].atendidos %>
                                                     <% } %>
                                                     <tr>
                                                         <td>Total:</td>
                                                         <td></td>
-                                                        <td><%= totalFechamento.toFixed(2) %></td>
-                                                        
+                                                        <td>
+                                                            <%= totalAberto.toFixed(2) %>
+                                                        </td>
+
                                                     </tr>
-                                                
+
                                                 </table>
-                                            </div>                                            
+                                            </div>
                                         </div>
-                                    </div>                                        
-                                </div>                                
+                                    </div>
+                                </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  onclick="window.location.href='/pdv'">Cancelar</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/pdv'">Cancelar</button>
                                     <button type="submit" class="btn btn-primary">Finalizar Caixa</button>
                                 </div>
                             </div>
                         </form>
                         <!-- /.modal-content -->
                     </div>
-                <!-- /.modal-dialog -->
+                    <!-- /.modal-dialog -->
                 </div>
 
-            </section>
-            <!-- Main content -->
-            <section class="content">
-                
-                                 
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Vendido</span>
+                                <span class="info-box-number"><%= (totalFechamento + totalAberto).toFixed(2) %></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Faturado</span>
+                                <span class="info-box-number"><%= totalFechamento.toFixed(2) %></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- fix for small devices only -->
+                    <div class="clearfix visible-sm-block"></div>
+
+                    <div class="col-md-3 col-sm-6 col-xs-8">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Total Itens</span>
+                                <span class="info-box-number"><%= totalPendente.toFixed(2) %></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Clientes Atendidos</span>
+                                <span class="info-box-number"><%= totalCliente.toFixed(2) %></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
             </section>
 
         </div>
 
         <!-- /.content-wrapper -->
         <% include /templates/footer %>
+
+
         <div class="control-sidebar-bg"></div>
     </div>
 </body>
+<script>
+        $(document).ready(function() {
+            var table = $('#griditens').DataTable( {
+                scrollY:        "100px",        
+                searching: false,
+                info: false,
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         false,
+                fixedColumns:   true
+                
+            } );
+        } );
+    </script>
 <% include /templates/scripts %>
+
 
 </html>

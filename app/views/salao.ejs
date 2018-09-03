@@ -121,7 +121,7 @@
                                                                                 <option value="">Selecione</option>
                                                                                 <% if( clientes.length > 0 ) {%>
                                                                                     <% for(var e=0; e < clientes.length; e++) {%>
-                                                                                        <option value="<%= clientes[e].id %>"><%= clientes[e].nome %></option>
+                                                                                        <option value="<%= clientes[e].id %>" <%= clientes[e].consumidor == 'S' ? 'selected' : ''%>><%= clientes[e].nome %></option>
                                                                                     <% } %>
                                                                                 <% } %>
                                                                             </select>
@@ -289,7 +289,7 @@
                 </div>   
                 <div class="modal fade" id="modal-atende">
                     <div class="modal-dialog">
-                        <form role="form" action="/atendeMesa" method="GET">
+                        <form role="form" action="/atendeMesa" method="POST">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -303,10 +303,11 @@
                                             <div class="form-group col-lg-12" >
                                                 <label>Mesa:</label>
                                                 <select class="form-control select2" required="true" name="mesa" style="width: 100%;">
+                                                    <% console.log(mesas) %>
                                                     <% if( mesas.length > 0 ) {%>
                                                         <% for(var e=0; e < mesas.length; e++) {%>
                                                             <% if( mesas[e].situacao == 'Ocupada' ) { %>
-                                                            <option value="<%= mesas[e].id %>"><%= mesas[e].mesanome %></option>
+                                                            <option value="<%= mesas[e].cupom %>"><%= mesas[e].mesanome %></option>
                                                             <% } %>
                                                         <% } %>
                                                     <% } %>  

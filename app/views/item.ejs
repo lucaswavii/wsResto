@@ -197,8 +197,9 @@
                                     </tr>
                                 </table>  
                                 <button type="button" class="btn btn-default btn-block <%= pago > 0 ? 'disabled' : '' %>" data-toggle="modal" data-target="#<%= pago > 0 ? '' : 'modal-item' %>">Item</button>
-                                <button type="button" class="btn btn-default btn-block <%= pago > 0 && pago >= subTotal ? 'disabled' : itens.length > 0 ? '' : 'disabled' %>" data-toggle="modal" data-target="#<%= pago > 0 && pago >= subTotal ? '' : 'pagarVendas' %>">Negociar</button>
-                                <button type="button" class="btn btn-default btn-block <%= pago > 0 && pago >= subTotal ? '' : 'disabled' %>" data-toggle="modal" data-target="#<%= pago > 0 && pago >= subTotal ? 'fechamentoMesa' : '#' %>">Finalizar</button>
+                                <button type="button" class="btn btn-default btn-block <%= pago > 0 && pago.toFixed(2) >= subTotal.toFixed(2) ? 'disabled' : itens.length > 0 ? '' : 'disabled' %>" data-toggle="modal" data-target="#<%= pago > 0 && pago.toFixed(2) >= subTotal.toFixed(2) ? '' : 'pagarVendas' %>">Negociar</button>
+                                <button type="button" class="btn btn-default btn-block <%= pago > 0 && pago.toFixed(2) >= subTotal.toFixed(2) ? '' : 'disabled' %>" data-toggle="modal" data-target="#<%= pago > 0 && pago.toFixed(2) >= subTotal.toFixed(2) ? 'fechamentoMesa' : '#' %>">Finalizar</button>
+                                <% console.log( pago + '>=' + subTotal ) %>
                                 <table id="gridparcelas" class="table table-striped table-bordered nowrap" style="width:100%">                                                                     
                                     <thead>  
                                         <tr>

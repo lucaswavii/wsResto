@@ -8,4 +8,8 @@ module.exports = function(application){
         application.app.controllers.pdv.fecha(application, req, res);
     });
 
+    application.post('/receberConta', function(req, res){
+        application.app.controllers.pdv.receberConta(application, req, res);
+    });
+
 }

@@ -60,7 +60,7 @@ module.exports.atendeMesa = function( application, req, res ){
         res.redirect("/login");
         return;			
     }
-    connection.end();
+   
     res.redirect("/item/" + dadosForms.mesa );
 
  
