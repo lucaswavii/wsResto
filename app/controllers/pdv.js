@@ -28,7 +28,7 @@ module.exports.index = function( application, req, res ){
         
         if( !caixa ) {
             connection.end(); 
-            res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}],  pdvs:{}, caixas:{}, resumoPagamento:{}, sessao: req.session.usuario  });
+            res.render('pdv', { validacao : [{'msg':'Terminal não configurado. Verifique se o ip ' + params.ip + ' encontra-se configurado no cadastro de caixa.'}],  pdvs:{}, caixas:{}, resumoPagamento:{},  recebiveis: {}, pagamentos:{}, sessao: req.session.usuario  });
             return;
         }
         
@@ -47,7 +47,7 @@ module.exports.index = function( application, req, res ){
                             pagamentoDao.listar( function(error, pagamentos){
 
                                 var funcionarioDeLojaAberto =  funcionarios.find((it) => { return it.id === frenteDeLojaAberto.operador; });
-                                                
+                                console.log(funcionarioDeLojaAberto)              
                                 if( funcionarioDeLojaAberto && funcionarioDeLojaAberto.id == req.session.usuario.fcid) {
                                     connection.end(); 
                                     res.render('pdv', { validacao : {}, pdvs : frenteDeLojaAberto, caixas:caixa, resumoPagamento:resumoPagamento, recebiveis:recebiveis, pagamentos:pagamentos, sessao: req.session.usuario  });
@@ -125,6 +125,13 @@ module.exports.receberConta = function( application, req, res ){
    // var ipCliente  = req.clientIp.split(':')[3];
     //var net = require('net');
    // var ip = net.isIP(ipNovo)
+    var date 		= require('datejs');
+
+    function leftPad(value, totalWidth, paddingChar) { 
+        var length = totalWidth - value.toString().length + 1; 
+        return Array(length).join(paddingChar || '0') + value; 
+    };
+
 
     if( req.session.usuario == undefined ) {
 		res.redirect("/login");
