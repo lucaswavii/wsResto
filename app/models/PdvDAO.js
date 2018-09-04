@@ -21,13 +21,13 @@ PdvDAO.prototype.resumoPagamento = function(pdv, callback) {
 	sql  	+= " inner join CONDPAGAMENTO condpagamento on ( condpagamento.id = pagamento.condpagamento ) " 
 	sql  	+= " where pagamento.recebimento is null and pdv.id = ? " 
 	sql  	+= " group by condpagamento.nome " 
-	
+		
 	this._connection.query(sql,[ pdv.id, pdv.id], callback);	
 }
 
 PdvDAO.prototype.recebiveisPdv = function(pdv, callback) {
 	
-	var sql  = " select movimento.id, pagamento.id as pagamento, pagamento.condpagamento, mesa.id as idMesa, cliente.nome as cliente, condpagamento.nome, mesa.nome as mesa, funcionario.nome as atendente, (select distinct sum(item.quantidade) as total from ITEM item where item.movimento = movimento.id and item.cancelamento is null ) as total, pagamento.pago as valor from PAGAMENTO pagamento "
+	var sql  = " select movimento.id, pagamento.id as pagamento, pagamento.condpagamento, mesa.id as idMesa, cliente.nome as cliente, condpagamento.nome, mesa.nome as mesa, funcionario.nome as atendente, (select distinct sum(item.quantidade) as total from ITEM item where item.movimento = movimento.id and item.cancelamento is null ) as total, pagamento.pago as valor, pagamento.troco as troco from PAGAMENTO pagamento "
 	sql  	+= " inner join MOVIMENTO movimento on ( movimento.id = pagamento.movimento ) "
 	sql  	+= " inner join PDV pdv on ( pdv.id = movimento.pdv ) "
 	sql  	+= " inner join CONDPAGAMENTO condpagamento on ( condpagamento.id = pagamento.condpagamento ) "

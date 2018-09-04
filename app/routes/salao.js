@@ -7,6 +7,10 @@ module.exports = function(application){
     application.post('/atendeMesa', function(req, res){
         application.app.controllers.salao.atendeMesa(application, req, res);
     });
+
+    application.post('/transferirMesa', function(req, res){
+        application.app.controllers.salao.transferirMesa(application, req, res);
+    });
     
-   
+    
 }

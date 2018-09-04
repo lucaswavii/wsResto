@@ -31,8 +31,11 @@ module.exports.atendimento = function( application, req, res ){
                             itemDao.listar(idCupom, function(error, itens){
                             
                                 pagarDao.listar(idCupom, function(error, pagar){
-                                    res.render('item', { validacao :{}, cliente:cliente[0], idCupom:idCupom, mesas:mesas, itens:itens, categorias:categorias, produtos:produtos, pagar:pagar, pagamentos:pagamentos, sessao:req.session.usuario  });
-                                    return;
+                                    
+                                    clienteDao.listar(function(error, clientes ){
+                                        res.render('item', { validacao :{}, cliente:cliente[0], clientes:clientes, idCupom:idCupom, mesas:mesas, itens:itens, categorias:categorias, produtos:produtos, pagar:pagar, pagamentos:pagamentos, sessao:req.session.usuario  });
+                                        return;
+                                    });
                                 });
                             });
                         });

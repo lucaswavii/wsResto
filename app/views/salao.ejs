@@ -50,6 +50,14 @@
                             </div>
                             <div class="box-body">
                                 <section class="content">
+                                <% if (flash.errorMessage ) { %>
+                                    <p class="text-red"><b></b></p>
+                                    <div class="alert alert-warning alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                        <h4><i class="icon fa fa-warning"></i> Alert!</h4>
+                                        <%= flash.errorMessage %>
+                                    </div>
+                                <% } %>   
                                 <% var livre = 0; var ocupado = 0; var negociando = 0; var bloqueado = 0;%>
 
                                 <% for( var i = 0; i < mesas.length; i++) {%>
@@ -173,9 +181,9 @@
                             </div>
                             <div class="box-body">
                                 <button type="button" class="btn btn-default btn-block" onclick="window.location.href='/salao'"><i class="fa fa-refresh"></i> Atualizar</button>
-                                <button type="button" class="btn btn-default btn-block"  data-toggle="modal" data-target="#modal-abre"><i class="fa fa-hand-stop-o"></i> Abre Mesa</button>
-                                <button type="button" class="btn btn-default btn-block"  data-toggle="modal" data-target="#modal-atende"><i class="fa fa-commenting"></i> Atende Mesa</button>
-                                <button type="button" class="btn btn-default btn-block"><i class="fa fa-fw fa-random"></i> Transferir Mesa</button>
+                                <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-abre"><i class="fa fa-hand-stop-o"></i> Abre Mesa</button>
+                                <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-atende"><i class="fa fa-commenting"></i> Atende Mesa</button>
+                                <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-transfere"><i class="fa fa-fw fa-random"></i> Transferir Mesa</button>
                                 <button type="button" class="btn btn-default btn-block"><i class="fa fa-print"></i> Imprimir Mesa</button>
                                 <button type="button" class="btn btn-default btn-block"><i class="fa fa-pencil-square-o"></i> Fechar Mesa</button>
                             </div>
@@ -325,7 +333,60 @@
                         <!-- /.modal-content -->
                     </div>
                     <!-- /.modal-dialog -->
-                </div>    
+                </div> 
+                <div class="modal fade" id="modal-transfere">
+                    <div class="modal-dialog">
+                        <form role="form" action="/transferirMesa" method="post">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Transferência de Mesa</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">                                            
+                                            
+                                            <div class="form-group col-lg-6" >
+                                                <label>Mesa Origem:</label>
+                                                <select class="form-control select2" required="true" name="origem" style="width: 100%;">
+                                                    <% if( mesas.length > 0 ) {%>
+                                                        <% for(var e=0; e < mesas.length; e++) {%>
+                                                            <% if( mesas[e].situacao == 'Ocupada' ) { %>
+                                                            <option value="<%= mesas[e].cupom %>"><%= mesas[e].mesanome %></option>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>  
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-lg-6" >
+                                                <label>Mesa Destino:</label>
+                                                <select class="form-control select2" required="true" name="destino" style="width: 100%;">
+                                                    <% if( mesas.length > 0 ) {%>
+                                                        <% for(var e=0; e < mesas.length; e++) {%>
+                                                            <% if( mesas[e].situacao == 'Ocupada' ) { %>
+                                                            <option value="<%= mesas[e].cupom %>"><%= mesas[e].mesanome %></option>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>  
+                                                </select>
+                                            </div>
+
+                                                                                                                
+                                        </div>
+                                    </div>                                                                  
+                                </div>                                                        
+                                <div class="modal-footer">
+                                    <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/salao'">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                </div>                                                        
+                            </div>
+                        </form>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>   
             </section>
         </div>
     </div>

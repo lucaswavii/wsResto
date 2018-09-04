@@ -3,6 +3,7 @@
 
 <head>
     <% include /templates/head %>
+    
 </head>
 
 <% function leftPad(value, totalWidth, paddingChar) { %>
@@ -67,106 +68,105 @@
                                                 <th>Atendente</th>
                                                 <th>Mesa</th>                                             
                                                 <th>Total</th>
+                                                <th>Pago</th>
+                                                <th>Troco</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <% var totalPendente = 0; %>
-                                                <% var obj = new Object(); %>
-                                                
-                                                <% for(var i = 0; i < recebiveis.length; i++) {%>
-                                                    <% if( !obj[ recebiveis[i].mesa ] ) { %>
-                                                    <% obj[ recebiveis[i].mesa ] = { id: recebiveis[i].idMesa, movimento: recebiveis[i].id, atendente: recebiveis[i].atendente, mesa: recebiveis[i].mesa , valor: 0, total: recebiveis[i].total } %>
-                                                    <% } %>
-                                                    <% obj[ recebiveis[i].mesa ].valor += recebiveis[i].valor  %>
-                                                <% } %>
-
-                                                <% var seq = 1;%>
-                                                <% for (const key in obj) { %>
-                                                    <% if (obj.hasOwnProperty(key)) { %>
-                                                    <%    const element = obj[key]; %>
-                                                    <tr>
-                                                        <td>
-                                                            <%= seq++ %>.
-                                                        </td>
-                                                                                                                
-                                                        <td>
-                                                            <%= element.atendente %>
-                                                        </td>
-                                                        
-                                                        <td>
-                                                            <%= element.mesa %>
-                                                        </td>
-
-                                                        <td>
-                                                            <%= element.valor.toFixed(2) %>
-                                                        </td>
-
-                                                        <td>
-                                                            <div class="tools">
-                                                                <a href="#"  data-toggle="modal" data-target="#modal-default-receber-<%= element.id  %>"><i class="fa fa fa-fw fa-money"></i></a>
-                                                            </div>
-                                                        </td>
-                                                        <% totalPendente += element.total %>
-                                                    </tr>
+                                            <% for(var i = 0; i < recebiveis.length; i++) {%>
+                                                   
+                                                <tr>
+                                                    <td>
+                                                        <%= i + 1 %>.
+                                                    </td>
+                                                                                                            
+                                                    <td>
+                                                        <%= recebiveis[i].atendente %>
+                                                    </td>
                                                     
-                                                    <div class="modal fade" id="modal-default-receber-<%= element.id %>">
-                                                        <div class="modal-dialog">
-                                                            <form role="form" action="/receberConta" method="post">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                        <h4 class="modal-title"><%= element.mesa %></h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="container-fluid">
-                                                                            <div class="row">
-                                                                                <% for(var i = 0; i < recebiveis.length; i++) {%>
-                                                                                    <% if( recebiveis[i].mesa == element.mesa ) { %>
-                                                                                        <div class="form-group col-lg-4">
-                                                                                            <label>Id:</label>                                                                        
-                                                                                            <input type="text" class="form-control" name="<%= i %>" required="true" value="<%=  recebiveis[i].pagamento  %>" readonly="true">
-                                                                                        </div>
+                                                    <td>
+                                                        <%= recebiveis[i].mesa %>
+                                                    </td>
 
-                                                                                        <div class="form-group col-lg-4" >
-                                                                                            <label>Pagamento:</label>
-                                                                                            <select class="form-control" required="true" name="<%= i %>">
-                                                                                                <<% if( pagamentos.length > 0 ) {%>
-                                                                                                    <% for(var e=0; e < pagamentos.length; e++) {%>
-                                                                                                        <option value="<%= pagamentos[e].id %>" <%= recebiveis[i].condpagamento == pagamentos[e].id ? 'selected' : '' %>><%= pagamentos[e].nome %></option>
-                                                                                                    <% } %>
-                                                                                                <% } %>     
-                                                                                            </select>
-                                                                                        </div>
+                                                    <td>
+                                                        <%= ( recebiveis[i].valor - recebiveis[i].troco ).toFixed(2) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= recebiveis[i].valor.toFixed(2) %>
+                                                    </td>
+                                                    <td>
+                                                            <%= recebiveis[i].troco ? recebiveis[i].troco.toFixed(2) : '0.00' %>
+                                                        </td>
 
-                                                                                        
-                                                                                        <div class="form-group col-lg-4">
-                                                                                            <label>R$:</label>                                                                        
-                                                                                            <input type="number" class="form-control" name="<%= i %>" required="true" value="<%=  recebiveis[i].valor.toFixed(2) %>" readonly="true">
-                                                                                        </div>
-                                                                                    <% } %>
-                                                                                <% } %>                                                        
-                                                                            </div>
-                                                                        </div>                                                                  
-                                                                    </div>                                                        
-                                                                    <div class="modal-footer">
-                                                                        <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/pdv'">Cancelar</button>
-                                                                        <button type="submit" class="btn btn-primary">Salvar</button>
-                                                                    </div>                                                        
-                                                                </div>
-                                                            </form>
-                                                            <!-- /.modal-content -->
+                                                    <td>
+                                                        <div class="tools">
+                                                            <a href="#"  data-toggle="modal" data-target="#modal-default-receber-<%= recebiveis[i].pagamento  %>"><i class="fa fa fa-fw fa-money"></i></a>
                                                         </div>
-                                                        <!-- /.modal-dialog -->
-                                                    </div>  
+                                                    </td>
+                                                    <% totalPendente += recebiveis[i].valor %>
+                                                </tr>
+                                                
+                                                <div class="modal fade" id="modal-default-receber-<%= recebiveis[i].pagamento  %>">
+                                                    <div class="modal-dialog">
+                                                        <form role="form" action="/receberConta" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    <h4 class="modal-title"><%= recebiveis[i].mesa %></h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="container-fluid">
+                                                                        <div class="row">
+                                                                            <div class="form-group col-lg-2">
+                                                                                <label>Id:</label>                                                                        
+                                                                                <input type="text" class="form-control" name="id" required="true" value="<%=  recebiveis[i].pagamento  %>" readonly="true">
+                                                                            </div>
+
+                                                                            <div class="form-group col-lg-4" >
+                                                                                <label>Pagamento:</label>
+                                                                                <select class="form-control" required="true" name="condpagamento">
+                                                                                    <<% if( pagamentos.length > 0 ) {%>
+                                                                                        <% for(var e=0; e < pagamentos.length; e++) {%>
+                                                                                            <option value="<%= pagamentos[e].id %>" <%= recebiveis[i].condpagamento == pagamentos[e].id ? 'selected' : '' %>><%= pagamentos[e].nome %></option>
+                                                                                        <% } %>
+                                                                                    <% } %>     
+                                                                                </select>
+                                                                            </div>
+                                                                                    
+                                                                            <div class="form-group col-lg-3">
+                                                                                <label>Pago R$:</label>                                                                        
+                                                                                <input type="number" class="form-control" name="valor" required="true" value="<%=  recebiveis[i].valor.toFixed(2) %>" readonly="true">
+                                                                            </div>
+
+                                                                            <div class="form-group col-lg-3">
+                                                                                <label>Troco R$:</label>                                                                        
+                                                                                <input type="number" class="form-control" name="troco" required="true" value="<%=  recebiveis[i].troco.toFixed(2) %>" readonly="true">
+                                                                            </div>
+                                                                        
+                                                                        </div>
+                                                                    </div>                                                                  
+                                                                </div>                                                        
+                                                                <div class="modal-footer">
+                                                                    <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/pdv'">Cancelar</button>
+                                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                                </div>                                                        
+                                                            </div>
+                                                        </form>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>  
+                                                
                                                     
-                                                    <% } %>
-                                                <% } %>
-                                            </tbody>
+                                            <% } %>
+                                        </tbody>
                                   
                                     </table>
+                                    <button type="button" class="btn btn-default btn-block btn-sm" onclick="window.location.href='/pdv'">Atualizar Recebimentos</button>
                                 </div>
                             </div>
                         </div>
@@ -353,7 +353,7 @@
                                                     </tr>
                                                     <% var totalFechamento = 0; var totalAberto = 0; var totalCliente = 0; %>
                                                     <% for(var i = 0; i < resumoPagamento.length; i++) {%>
-                                                        <% if( resumoPagamento[i].status == 'Aberto' ) { %>
+                                                        <% if( resumoPagamento[i].status == 'Recebido' ) { %>
                                                         <tr>
                                                             <td>
                                                                 <%= i + 1 %>.
@@ -416,7 +416,7 @@
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Total Faturado</span>
-                                <span class="info-box-number"><%= totalFechamento.toFixed(2) %></span>
+                                <span class="info-box-number"><%= totalAberto.toFixed(2) %></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>

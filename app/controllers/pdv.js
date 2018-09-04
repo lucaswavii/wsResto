@@ -47,7 +47,7 @@ module.exports.index = function( application, req, res ){
                             pagamentoDao.listar( function(error, pagamentos){
 
                                 var funcionarioDeLojaAberto =  funcionarios.find((it) => { return it.id === frenteDeLojaAberto.operador; });
-                                console.log(funcionarioDeLojaAberto)              
+                                             
                                 if( funcionarioDeLojaAberto && funcionarioDeLojaAberto.id == req.session.usuario.fcid) {
                                     connection.end(); 
                                     res.render('pdv', { validacao : {}, pdvs : frenteDeLojaAberto, caixas:caixa, resumoPagamento:resumoPagamento, recebiveis:recebiveis, pagamentos:pagamentos, sessao: req.session.usuario  });
@@ -114,7 +114,6 @@ module.exports.abre = function( application, req, res ){
             }
         });
     });
-
 }
 
 
@@ -122,117 +121,101 @@ module.exports.receberConta = function( application, req, res ){
 
     this._meuIp = require('ip');        
     var ip = this._meuIp.address();
+    var date 		= require('datejs');
    // var ipCliente  = req.clientIp.split(':')[3];
     //var net = require('net');
    // var ip = net.isIP(ipNovo)
-    var date 		= require('datejs');
-
-    function leftPad(value, totalWidth, paddingChar) { 
-        var length = totalWidth - value.toString().length + 1; 
-        return Array(length).join(paddingChar || '0') + value; 
-    };
-
 
     if( req.session.usuario == undefined ) {
 		res.redirect("/login");
 		return;			
     }
-    
-    var connection = application.config.dbConnection();
-    var pagarDao = new application.app.models.PagarDAO(connection); 
-    var financeiroDao = new application.app.models.FinanceiroDAO(connection);
-    var movimentoDao = new application.app.models.MovimentoDAO(connection);
-    var pagamentoDao = new application.app.models.PagamentoDAO(connection);
 
     var dadosForms = req.body;
-   
-    for (const key in dadosForms) {
-        
-        if (dadosForms.hasOwnProperty(key)) {
-        
-            const element = dadosForms[key];
-            
-            pagarDao.editar( element[0], function(error, pagar){
-                
-                pagar[0].condpagamento = element[1];
-                pagar[0].recebimento = new Date();
 
-                movimentoDao.editar( pagar[0].movimento, function(error, movimentos){
-                    
-                    pagamentoDao.editar( pagar[0].condpagamento, function(error, condicaoPagamento){
+    var empresa = req.session.usuario.emid;
 
-                        var parcelas = condicaoPagamento[0].formula.toUpperCase().split('/');                        
-                    
-                        if( parcelas.length  > 1 ) {
+    var connection = application.config.dbConnection();
+    var pagarDao = new application.app.models.PagarDAO(connection);
+    var pagamentoDao = new application.app.models.PagamentoDAO(connection);
+    var movimentoDao = new application.app.models.MovimentoDAO(connection);
+    var financeiroDao = new application.app.models.FinanceiroDAO(connection);
+
+    pagamentoDao.editar(dadosForms.condpagamento, function(error, pagamentos){
+
+        pagarDao.editar( dadosForms.id, function(error, pagar){
+
+            movimentoDao.editar( pagar[0].movimento, function(error, movimentos){
+                var parcelas = pagamentos[0].formula.toUpperCase().split('/'); 
+                if( parcelas.length  > 1 ) {
+                        
+                    for(var i=0; i < parcelas.length; i++) {
                             
-                            for(var i=0; i < parcelas.length; i++) {
-                                    
-                                var separacao = parcelas[i].split('DD');
-                                var dias      = separacao[0];
-                                var percentual= separacao[1].replace('%','');
+                        var separacao = parcelas[i].split('DD');
+                        var dias      = separacao[0];
+                        var percentual= separacao[1].replace('%','');
 
-                                if( percentual.indexOf(',') >=0 ) {
-                                    percentual = percentual.replace(',', '.')
-                                }
-                                var valor = pagar[0].pago;
-                                var lancamento = { 
-                                                    data: new Date(), 
-                                                    cliente: movimentos[0].cliente, 
-                                                    pagamento: pagar[0].condpagamento,
-                                                    disponivel: pagar[0].disponivel, 
-                                                    vencimento: Date.today().addDays(dias),
-                                                    correcao: Date.today().addDays(dias),
-                                                    valor : ( valor*percentual)/100,
-                                                    pago:'N'  }
-
-                                
-                                financeiroDao.salvar(lancamento, function(error, result){});                                
-                                pagarDao.salvar(pagar[0], function(error, result){});                                
-                            } 
-                            
-                            connection.end(); 
-                            res.redirect('/pdv')
-
-                        } else {
-
-                            var separacao = parcelas[0].split('DD');
-                            var dias      = separacao[0];
-                            var percentual= separacao[1].replace('%','');
-                            
-                            var valor = pagar[0].pago;
-                                
-                                
-                            if( percentual.indexOf(',') >=0 ) {
-                                percentual = percentual.replace(',', '.')
-                            }
-
-                            var lancamento = { 
-                                                data: new Date(), 
-                                                cliente: movimentos[0].cliente, 
-                                                pagamento: pagar[0].condpagamento,
-                                                vencimento: Date.today().addDays(dias),
-                                                correcao: Date.today().addDays(dias),
-                                                disponivel: pagar[0].disponivel,
-                                                valor : ( valor*percentual )/100, 
-                                                pago:'N' 
-                                            }
-                            
-                            financeiroDao.salvar(lancamento, function(error, result){});
-                            
-                            element.recebimento = new Date();
-                            pagarDao.salvar(pagar[0], function(error, result){}); 
-                            
-                            connection.end(); 
-                            res.redirect('/pdv')
+                        if( percentual.indexOf(',') >=0 ) {
+                            percentual = percentual.replace(',', '.')
                         }
-                    });
-                });
-            });            
-        }
-    }
-    
-    
+                        var valor = pagar[0].pago;
+                        var lancamento = { 
+                                            data: new Date(), 
+                                            cliente: movimentos[0].cliente, 
+                                            pagamento: pagar[0].id,
+                                            disponivel: pagar[0].disponivel, 
+                                            vencimento: Date.today().addDays(dias),
+                                            correcao: Date.today().addDays(dias),
+                                            valor : ( valor*percentual)/100,
+                                            pago:'N'  }
 
+                        
+                        financeiroDao.salvar(lancamento, function(error, result){
+
+                            pagar[0].recebimento = new Date();
+                           
+                            pagarDao.salvar(pagar[0], function(error, result){});   
+                        });                          
+                    }
+                    
+                    connection.end(); 
+                    res.redirect('/pdv');
+                    
+                } else {
+
+                    var separacao = parcelas[0].split('DD');
+                    var dias      = separacao[0];
+                    var percentual= separacao[1].replace('%','');
+                    
+                    var valor = pagar[0].pago;
+                        
+                        
+                    if( percentual.indexOf(',') >=0 ) {
+                        percentual = percentual.replace(',', '.')
+                    }
+
+                    var lancamento = { 
+                                        data: new Date(), 
+                                        cliente: movimentos[0].cliente, 
+                                        pagamento: pagar[0].id,
+                                        vencimento: Date.today().addDays(dias),
+                                        correcao: Date.today().addDays(dias),
+                                        disponivel: pagar[0].disponivel,
+                                        valor : ( valor*percentual )/100, 
+                                        pago:'N' 
+                                    }
+                    
+                    financeiroDao.salvar(lancamento, function(error, result){
+                        pagar[0].recebimento = new Date();                            
+                        pagarDao.salvar(pagar[0], function(error, result){
+                            connection.end(); 
+                            res.redirect('/pdv');
+                        });
+                    });
+                }
+            });
+        });
+    });
 }
 
 module.exports.fecha = function( application, req, res ){
